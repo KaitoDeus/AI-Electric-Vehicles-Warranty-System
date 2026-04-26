@@ -167,7 +167,30 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 ---
 
-## 🖥️ 8. Hướng dẫn chạy dự án trên Visual Studio 2022
+## 🛡️ 8. Middleware & Request Pipeline
+
+### ❓ Middleware là gì?
+Middleware là những đoạn code nằm trong pipeline (đường ống) xử lý yêu cầu của ASP.NET Core. Mỗi middleware có thể thực hiện logic trước và sau khi request đi qua nó (như Logging, Authentication, Error Handling).
+
+### 📝 Triển khai Request Logging Middleware
+Tôi đã cài đặt cho bạn một middleware để theo dõi mọi truy cập vào hệ thống ngay tại terminal.
+
+1. **Cấu trúc:** Đặt trong `EVWarranty.WebApi/Middlewares/RequestLoggingMiddleware.cs`.
+2. **Tính năng:** Hiển thị Method (màu sắc), URL, Status Code và thời gian xử lý (ms).
+
+**Cách đăng ký trong `Program.cs`:**
+```csharp
+using EVWarranty.WebApi.Middlewares;
+
+var app = builder.Build();
+
+// Đăng ký ngay sau khi build app để bắt được mọi request
+app.UseMiddleware<RequestLoggingMiddleware>();
+```
+
+---
+
+## 🖥️ 9. Hướng dẫn chạy dự án trên Visual Studio 2022
 
 Để bắt đầu phát triển và kiểm thử API, hãy làm theo các bước sau:
 
@@ -192,4 +215,6 @@ Bây giờ, bạn hãy thử tạo một Controller đơn giản có tên là `V
 - [x] Tôi đã viết lệnh tạo dự án thực tế cho bạn?
 - [x] Tôi đã viết code mẫu cho lớp **Domain** (Thực thể và Logic)?
 - [x] Triển khai Repository & Unit of Work (Hoàn thành).
-- [ ] Tôi sẽ cấu hình **Swagger** và **JWT Authentication**?
+- [x] Thiết lập Logging Middleware (Hoàn thành).
+- [x] Cấu hình Swagger và JWT Authentication (Hoàn thành).
+- [ ] Tôi sẽ hướng dẫn bạn viết API Login để lấy Token?

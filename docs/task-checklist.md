@@ -13,8 +13,9 @@ Dưới đây là lộ trình chi tiết của dự án, giúp theo dõi những
 
 ## 🚧 Giai đoạn 2: Phát triển Backend Core (Đang thực hiện)
 - [x] Triển khai Generic Repository & Unit of Work mẫu.
+- [x] Thiết lập Pipeline Logging Middleware (URL & Method).
 - [x] Cấu hình Dependency Injection (DI) trong WebApi.
-- [ ] Thiết lập Authentication & Authorization (JWT Token).
+- [x] Thiết lập Authentication & Authorization (JWT Token).
 - [ ] Cài đặt AutoMapper và FluentValidation.
 - [ ] Viết API quản lý Người dùng (Login/Register).
 - [ ] Viết API quản lý Xe (Vehicle) và Khách hàng (Customer).
