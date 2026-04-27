@@ -17,8 +17,9 @@ Dưới đây là lộ trình chi tiết của dự án, giúp theo dõi những
 - [x] Cấu hình Dependency Injection (DI) trong WebApi.
 - [x] Thiết lập Authentication & Authorization (JWT Token).
 - [x] Cài đặt AutoMapper và FluentValidation.
-- [/] Viết API quản lý Người dùng (Login/Register) - Đang thực hiện.
-- [ ] Viết API quản lý Xe (Vehicle) và Khách hàng (Customer).
+- [x] Viết API quản lý Người dùng (Chức năng Login hoàn tất).
+- [x] Viết API quản lý Xe (Vehicle) - Cơ bản (Lấy danh sách).
+- [ ] Viết API quản lý Khách hàng (Customer) và Đăng ký (Register).
 
 ## 🛠️ Giai đoạn 3: Nghiệp vụ Bảo hành & AI (Sắp tới)
 - [ ] Xây dựng quy trình tạo yêu cầu bảo hành (Warranty Claim).

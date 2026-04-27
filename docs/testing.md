@@ -25,6 +25,8 @@ Tài liệu này ghi lại các tính năng đã hoàn thành và danh sách cá
 | F03 | Cột `PasswordHash` bị cắt ngắn chuỗi | Nâng cấp độ dài cột từ `VARCHAR(50)` lên `VARCHAR(255)` trong SQL. | ✅ Fixed |
 | F04 | Lỗi `IEnumerable` không hỗ trợ `null` check | Sử dụng `.FirstOrDefault()` từ thư viện LINQ để lấy user duy nhất. | ✅ Fixed |
 | F05 | Swagger không cho gửi Token | Cấu hình `AddSecurityDefinition` và `AddSecurityRequirement` trong `Program.cs`. | ✅ Fixed |
+| F06 | Lỗi 401 do Password giả ở DB không hợp lệ BCrypt | Sửa `db/script.sql` và update trực tiếp DB thật với chuỗi hash đúng của `123456`. | ✅ Fixed |
+| F07 | Port không đồng bộ (5254 vs 5000) | Sửa lại `launchSettings.json` và file `EVWarranty.WebApi.http` để chạy chuẩn port 5000. | ✅ Fixed |
 
 ---
 

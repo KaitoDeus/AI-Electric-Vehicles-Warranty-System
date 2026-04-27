@@ -288,7 +288,7 @@ Trong hàm `LoginAsync`, hãy thay thế `Token = ""` bằng `Token = GenerateJw
 
 ### Mentor's Challenge:
 
-Bây giờ, bạn hãy thử tạo một Controller đơn giản có tên là `VehiclesController` và dùng `IUnitOfWork` để lấy danh sách xe xem sao nhé! Nếu gặp khó khăn, tôi sẽ "ra tay" hỗ trợ ngay.
+🎉 **Bạn đã hoàn thành xuất sắc thử thách này!** Bạn đã tự tạo thành công `VehiclesController`, sử dụng `IUnitOfWork` để lấy danh sách xe và thậm chí đã biết áp dụng `[Authorize]` để bảo vệ API của mình.
 
 ### Tiếp theo bạn muốn tôi thực hiện bước nào?
 
@@ -297,4 +297,4 @@ Bây giờ, bạn hãy thử tạo một Controller đơn giản có tên là `V
 - [x] Triển khai Repository & Unit of Work (Hoàn thành).
 - [x] Thiết lập Logging Middleware (Hoàn thành).
 - [x] Cấu hình Swagger và JWT Authentication (Hoàn thành).
-- [/] Tôi sẽ hướng dẫn bạn viết API Login để lấy Token? (Đang thực hiện)
+- [x] Tôi sẽ hướng dẫn bạn viết API Login để lấy Token? (Hoàn thành)
