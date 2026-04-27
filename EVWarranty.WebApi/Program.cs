@@ -10,7 +10,22 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
+Environment.SetEnvironmentVariable("DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION", "1");
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Cấu hình Logging để hiển thị màu sắc trên Terminal
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(options =>
+{
+    options.FormatterName = "simple";
+});
+builder.Logging.AddSimpleConsole(options =>
+{
+    options.ColorBehavior = Microsoft.Extensions.Logging.Console.LoggerColorBehavior.Enabled;
+    options.SingleLine = true;
+    options.TimestampFormat = "[HH:mm:ss] ";
+});
 
 // --- KHU VỰC 1: ĐĂNG KÝ SERVICES ---
 
