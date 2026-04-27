@@ -16,8 +16,8 @@ Dưới đây là lộ trình chi tiết của dự án, giúp theo dõi những
 - [x] Thiết lập Pipeline Logging Middleware (URL & Method).
 - [x] Cấu hình Dependency Injection (DI) trong WebApi.
 - [x] Thiết lập Authentication & Authorization (JWT Token).
-- [ ] Cài đặt AutoMapper và FluentValidation.
-- [ ] Viết API quản lý Người dùng (Login/Register).
+- [x] Cài đặt AutoMapper và FluentValidation.
+- [/] Viết API quản lý Người dùng (Login/Register) - Đang thực hiện.
 - [ ] Viết API quản lý Xe (Vehicle) và Khách hàng (Customer).
 
 ## 🛠️ Giai đoạn 3: Nghiệp vụ Bảo hành & AI (Sắp tới)

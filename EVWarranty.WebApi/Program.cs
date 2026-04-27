@@ -1,3 +1,5 @@
+using EVWarranty.Application.Interfaces;
+using EVWarranty.Application.Services;
 using EVWarranty.Domain.Entities.Interfaces;
 using EVWarranty.Infrastructure.Data;
 using EVWarranty.Infrastructure.Repositories;
@@ -17,6 +19,7 @@ builder.Services.AddDbContext<EvWarrantyDbContext>(options =>
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // 3. Cấu hình Swagger hỗ trợ JWT
 builder.Services.AddSwaggerGen(options =>

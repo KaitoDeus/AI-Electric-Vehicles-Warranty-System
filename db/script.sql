@@ -182,10 +182,10 @@ INSERT INTO ServiceCenters (SCName, Address, Phone, Email) VALUES
 (N'VinFast TP.HCM - Landmark 81', N'208 Nguyễn Hữu Cảnh, TP.HCM', '0283999888', 'sc.landmark@ev.com');
 
 INSERT INTO Users (Username, PasswordHash, FullName, RoleID, SCID) VALUES 
-('admin', 'hash_password', N'Quản trị viên', 1, NULL),
-('evm_staff1', 'hash_password', N'Nguyễn Văn Hãng', 2, NULL),
-('sc_staff1', 'hash_password', N'Trần Trạm Trưởng', 3, 1),
-('sc_tech1', 'hash_password', N'Lê Kỹ Thuật', 4, 1);
+('admin', '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my', N'Quản trị viên', 1, NULL),
+('evm_staff', '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my', N'Nhân viên EVM', 2, NULL),
+('sc_staff', '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my', N'Nhân viên SC', 3, 1),
+('sc_tech', '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my', N'Kỹ thuật viên SC', 4, 1);
 
 INSERT INTO Parts (PartCode, PartName, Category, Unit) VALUES 
 ('BAT-72V-LFP', N'Pin LFP 72V 100Ah', 'Battery', N'Cái'),

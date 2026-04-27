@@ -11,12 +11,14 @@ public class UnitOfWork : IUnitOfWork
     // Khai báo các Repository cụ thể
     public IGenericRepository<Vehicle> Vehicles { get; private set; }
     public IGenericRepository<WarrantyClaim> Claims { get; private set; }
+    public IGenericRepository<User> Users { get; private set; }
 
     public UnitOfWork(EvWarrantyDbContext context)
     {
         _context = context;
         Vehicles = new GenericRepository<Vehicle>(_context);
         Claims = new GenericRepository<WarrantyClaim>(_context);
+        Users = new GenericRepository<User>(_context);
     }
 
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();

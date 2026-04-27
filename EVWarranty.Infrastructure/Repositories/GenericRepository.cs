@@ -14,5 +14,7 @@ namespace EVWarranty.Infrastructure.Repositories
         public async Task AddAsync(T entity) => await _context.Set<T>().AddAsync(entity);
         public void Update(T entity) => _context.Set<T>().Update(entity);
         public void Delete(T entity) => _context.Set<T>().Remove(entity);
+        public async Task<IEnumerable<T>> FindAsync(System.Linq.Expressions.Expression<Func<T, bool>> predicate)
+            => await _context.Set<T>().Where(predicate).ToListAsync();
     }
 }
