@@ -58,7 +58,7 @@ CREATE TABLE Users (
 
 -- Nhóm 2: Sản phẩm & Kho
 CREATE TABLE Customers (
-    CustomerID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     FullName NVARCHAR(100) NOT NULL,
     Phone VARCHAR(20) UNIQUE,
     Email VARCHAR(100),
@@ -71,7 +71,7 @@ CREATE TABLE Vehicles (
     ModelName NVARCHAR(100) NOT NULL,
     Color NVARCHAR(50),
     PurchaseDate DATE,
-    CustomerID INT FOREIGN KEY REFERENCES Customers(CustomerID),
+    CustomerID UNIQUEIDENTIFIER FOREIGN KEY REFERENCES Customers(CustomerID),
     CurrentMileage INT DEFAULT 0,
     Status NVARCHAR(50) DEFAULT 'Active'
 );

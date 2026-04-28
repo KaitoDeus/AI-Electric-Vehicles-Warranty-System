@@ -13,7 +13,7 @@ public partial class Vehicle
 
     public DateOnly? PurchaseDate { get; set; }
 
-    public int? CustomerId { get; set; }
+    public Guid? CustomerId { get; set; }
 
     public int? CurrentMileage { get; set; }
 
