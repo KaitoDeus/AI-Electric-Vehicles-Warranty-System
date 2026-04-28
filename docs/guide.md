@@ -248,9 +248,11 @@ Chúng ta đang xây dựng luồng xác thực cho hệ thống. Dưới đây 
 ### 🚩 Thử thách CUỐI CÙNG cho tính năng Login:
 
 #### 1. Thêm `using System.Linq;`:
+
 Trong file `AuthService.cs`, hãy thêm `using System.Linq;` ở đầu file để lệnh `.FirstOrDefault()` có thể hoạt động.
 
 #### 2. Viết hàm `GenerateJwtToken` (Trong `AuthService.cs`):
+
 Đây là bước "phù phép" để biến thông tin User thành một chuỗi mã hóa an toàn. Bạn hãy thêm các directive cần thiết (`using System.Security.Claims;`, `using System.IdentityModel.Tokens.Jwt;`, `using System.Text;`, `using Microsoft.IdentityModel.Tokens;`) và thêm hàm private này vào cuối lớp `AuthService`:
 
 ```csharp
@@ -263,7 +265,7 @@ private string GenerateJwtToken(User user)
     {
         new Claim(ClaimTypes.Name, user.Username),
         new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-        new Claim(ClaimTypes.Role, "Admin") // Tạm thời để Admin
+        new Claim(ClaimTypes.Role, "Admin") 
     };
 
     var tokenDescriptor = new SecurityTokenDescriptor
@@ -282,6 +284,7 @@ private string GenerateJwtToken(User user)
 ```
 
 #### 3. Gọi hàm tạo Token:
+
 Trong hàm `LoginAsync`, hãy thay thế `Token = ""` bằng `Token = GenerateJwtToken(user)`.
 
 ---
@@ -298,3 +301,185 @@ Trong hàm `LoginAsync`, hãy thay thế `Token = ""` bằng `Token = GenerateJw
 - [x] Thiết lập Logging Middleware (Hoàn thành).
 - [x] Cấu hình Swagger và JWT Authentication (Hoàn thành).
 - [x] Tôi sẽ hướng dẫn bạn viết API Login để lấy Token? (Hoàn thành)
+- [ ] **Tiếp theo:** Xây dựng API quản lý Khách hàng (Customer) & Đăng ký.
+
+---
+
+## 🛠️ 11. Hướng dẫn API quản lý Khách hàng (Customer)
+
+Chào mừng bạn đến với thử thách tiếp theo! Chúng ta sẽ cùng nhau xây dựng module **Quản lý Khách hàng**. Trong hệ thống bảo hành, Khách hàng là đối tượng trung tâm, việc quản lý thông tin khách hàng chính xác là nền tảng để xử lý các yêu cầu bảo hành sau này.
+
+Chúng ta sẽ thực hiện theo 6 bước chuẩn mực của **Clean Architecture**:
+
+#### 📋 Danh sách kiểm tra (Checklist):
+- [ ] **Bước 1:** Thiết kế DTOs (Data Transfer Objects)
+- [ ] **Bước 2:** Định nghĩa Interface cho Service
+- [ ] **Bước 3:** Triển khai Service Logic
+- [ ] **Bước 4:** Cấu hình AutoMapper Mapping
+- [ ] **Bước 5:** Đăng ký Dependency Injection (DI)
+- [ ] **Bước 6:** Xây dựng Customers Controller
+
+---
+
+#### 💡 Chi tiết từng bước:
+
+### Bước 1: Thiết kế DTOs (Lớp Application)
+**Tại sao?** Chúng ta không bao giờ trả về trực tiếp thực thể Database (Entity) cho người dùng vì lý do bảo mật và hiệu suất.
+
+1. Tạo thư mục: `EVWarranty.Application/DTOs/Customer`
+2. File `CustomerDto.cs` (Dữ liệu trả về):
+```csharp
+namespace EVWarranty.Application.DTOs.Customer;
+
+public class CustomerDto
+{
+    public int CustomerId { get; set; }
+    public string FullName { get; set; } = null!;
+    public string? Phone { get; set; }
+    public string? Email { get; set; }
+}
+```
+3. File `CustomerCreateDto.cs` (Dữ liệu nhận vào):
+```csharp
+using System.ComponentModel.DataAnnotations;
+
+namespace EVWarranty.Application.DTOs.Customer;
+
+public class CustomerCreateDto
+{
+    [Required(ErrorMessage = "Tên không được để trống")]
+    public string FullName { get; set; } = null!;
+
+    [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
+    public string? Phone { get; set; }
+
+    [EmailAddress(ErrorMessage = "Email không hợp lệ")]
+    public string? Email { get; set; }
+}
+```
+
+### Bước 2: Định nghĩa Interface (Lớp Application)
+**Tại sao?** Giúp code linh hoạt, dễ viết Unit Test.
+
+Tạo file `ICustomerService.cs` trong thư mục `Interfaces`:
+```csharp
+using EVWarranty.Application.DTOs.Customer;
+
+namespace EVWarranty.Application.Interfaces;
+
+public interface ICustomerService
+{
+    Task<IEnumerable<CustomerDto>> GetAllCustomersAsync();
+    Task<CustomerDto> RegisterCustomerAsync(CustomerCreateDto dto);
+}
+```
+
+### Bước 3: Triển khai Service Logic (Lớp Application)
+**Tại sao?** Đây là nơi chứa các quy tắc nghiệp vụ chính.
+
+Tạo file `CustomerService.cs` trong thư mục `Services`:
+```csharp
+using AutoMapper;
+using EVWarranty.Application.DTOs.Customer;
+using EVWarranty.Application.Interfaces;
+using EVWarranty.Domain.Entities;
+using EVWarranty.Domain.Entities.Interfaces;
+
+namespace EVWarranty.Application.Services;
+
+public class CustomerService : ICustomerService
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public CustomerService(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<IEnumerable<CustomerDto>> GetAllCustomersAsync()
+    {
+        var customers = await _unitOfWork.Repository<Customer>().GetAllAsync();
+        return _mapper.Map<IEnumerable<CustomerDto>>(customers);
+    }
+
+    public async Task<CustomerDto> RegisterCustomerAsync(CustomerCreateDto dto)
+    {
+        var customer = _mapper.Map<Customer>(dto);
+        await _unitOfWork.Repository<Customer>().AddAsync(customer);
+        await _unitOfWork.CompleteAsync();
+        return _mapper.Map<CustomerDto>(customer);
+    }
+}
+```
+
+### Bước 4: Cấu hình Mapping (Lớp Application)
+**Tại sao?** Tự động hóa việc chuyển đổi dữ liệu.
+
+Tạo file `MappingProfile.cs` trong thư mục `Mappings`:
+```csharp
+using AutoMapper;
+using EVWarranty.Application.DTOs.Customer;
+using EVWarranty.Domain.Entities;
+
+namespace EVWarranty.Application.Mappings;
+
+public class MappingProfile : Profile
+{
+    public MappingProfile()
+    {
+        CreateMap<Customer, CustomerDto>();
+        CreateMap<CustomerCreateDto, Customer>();
+    }
+}
+```
+
+### Bước 5: Đăng ký Dependency Injection (DI) (Lớp WebAPI)
+Mở `Program.cs` ở tầng WebAPI và thêm:
+```csharp
+using EVWarranty.Application.Mappings;
+// ...
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+```
+
+### Bước 6: Tạo API Controller (Lớp WebAPI)
+Tạo file `CustomersController.cs` trong thư mục `Controllers`:
+```csharp
+using EVWarranty.Application.DTOs.Customer;
+using EVWarranty.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace EVWarranty.WebApi.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+[Authorize]
+public class CustomersController : ControllerBase
+{
+    private readonly ICustomerService _customerService;
+
+    public CustomersController(ICustomerService customerService)
+    {
+        _customerService = customerService;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll()
+    {
+        var result = await _customerService.GetAllCustomersAsync();
+        return Ok(result);
+    }
+
+    [HttpPost("register")]
+    public async Task<ActionResult<CustomerDto>> Register(CustomerCreateDto dto)
+    {
+        var result = await _customerService.RegisterCustomerAsync(dto);
+        return Ok(result);
+    }
+}
+```
+
+---
