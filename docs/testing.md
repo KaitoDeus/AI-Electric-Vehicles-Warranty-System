@@ -15,9 +15,10 @@ Tài liệu này ghi lại các tính năng đã hoàn thành và danh sách cá
 - [x] **Bảo mật API**: Yêu cầu JWT Token (Bearer) để truy cập.
 
 ### 3. Quản lý Khách hàng (Customer Management)
-- [x] **API Register**: Thêm mới khách hàng với đầy đủ thông tin.
-- [x] **API Get All Customers**: Lấy danh sách khách hàng (Yêu cầu Token).
-- [x] **Validation**: Đã tích hợp FluentValidation để kiểm tra dữ liệu đầu vào chuyên nghiệp.
+- [x] **API Register**: Thêm mới khách hàng với GUID ngẫu nhiên.
+- [x] **API Get All Customers**: Lấy danh sách khách hàng (Đã hỗ trợ GUID).
+- [x] **Validation**: Đã tích hợp FluentValidation để kiểm tra dữ liệu đầu vào.
+- [x] **Bảo mật dữ liệu**: Đã chuyển sang Manual Mapping (loại bỏ AutoMapper).
 
 ---
 
@@ -58,5 +59,18 @@ Tài liệu này ghi lại các tính năng đã hoàn thành và danh sách cá
 3. **Action**: Đính kèm Token (Bearer) vào Header.
 4. **Expected**: Trả về HTTP 200 và danh sách xe.
 
+
+## 📋 Nhật ký Kiểm thử Chi tiết (Regression Testing - 28/04/2026)
+
+| ID | Kịch bản Test (Test Case) | Kết quả | Ghi chú |
+|:---|:---|:---|:---|
+| TC-L01 | Đăng nhập Admin (`admin`/`123456`) | ✅ Pass | Trả về JWT Token hợp lệ sau khi đồng bộ Hash mới. |
+| TC-C03 | Đăng ký khách hàng mới (Data chuẩn) | ✅ Pass | ID trả về dạng GUID (`0e5bd27a-...`), không còn là số 1, 2, 3. |
+| TC-C04 | Đăng ký khách hàng (Data sai định dạng) | ✅ Pass | Trả về 400 Bad Request kèm thông báo lỗi chi tiết từ FluentValidation. |
+| TC-C05 | Lấy danh sách khách hàng (Có Token) | ✅ Pass | Trả về mảng JSON chứa thông tin khách hàng với ID GUID. |
+| TC-V01 | Lấy danh sách xe (Có Token) | ✅ Pass | API hoạt động ổn định, kết nối tốt với Unit of Work. |
+
 ---
-*Cập nhật lần cuối: 27/04/2026 bởi Mentor AI*
+**Kết luận của Tester:** Hệ thống đã vượt qua bài kiểm tra bảo mật (Manual Mapping) và định danh ngẫu nhiên (GUID). Sẵn sàng cho các module nghiệp vụ tiếp theo.
+
+*Cập nhật lần cuối: 28/04/2026 bởi Mentor AI (Tester Mode)*
