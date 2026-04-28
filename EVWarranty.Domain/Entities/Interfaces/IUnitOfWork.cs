@@ -7,5 +7,6 @@ public interface IUnitOfWork : IDisposable
     IGenericRepository<Vehicle> Vehicles { get; }
     IGenericRepository<WarrantyClaim> Claims { get; }
     IGenericRepository<User> Users { get; }
-    Task<int> CompleteAsync(); // Lưu tất cả thay đổi vào DB
+    IGenericRepository<T> Repository<T>() where T : class;
+    Task<int> CompleteAsync();
 }

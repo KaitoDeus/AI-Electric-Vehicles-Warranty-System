@@ -14,7 +14,7 @@ Environment.SetEnvironmentVariable("DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIR
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Cấu hình Logging để hiển thị màu sắc trên Terminal
+// 1. Cấu hình Logging để hiển thị màu sắc trên Terminal
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole(options =>
 {
@@ -27,7 +27,7 @@ builder.Logging.AddSimpleConsole(options =>
     options.TimestampFormat = "[HH:mm:ss] ";
 });
 
-// --- KHU VỰC 1: ĐĂNG KÝ SERVICES ---
+// 2. Cấu hình Database & Repositories
 
 builder.Services.AddDbContext<EvWarrantyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -87,13 +87,16 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// 5. Đăng ký Business Services & Controllers
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+
 var app = builder.Build();
 
-// --- KHU VỰC 2: CẤU HÌNH PIPELINE ---
+// 6. --- KHU VỰC 2: CẤU HÌNH PIPELINE ---
 
 app.UseMiddleware<RequestLoggingMiddleware>();
 
