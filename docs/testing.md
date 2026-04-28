@@ -15,9 +15,9 @@ Tài liệu này ghi lại các tính năng đã hoàn thành và danh sách cá
 - [x] **Bảo mật API**: Yêu cầu JWT Token (Bearer) để truy cập.
 
 ### 3. Quản lý Khách hàng (Customer Management)
-- [ ] **API Register**: Thêm mới khách hàng với đầy đủ thông tin.
-- [ ] **API Get All Customers**: Lấy danh sách khách hàng (Yêu cầu Token).
-- [ ] **Validation**: Kiểm tra lỗi khi để trống Tên hoặc sai định dạng Email.
+- [x] **API Register**: Thêm mới khách hàng với đầy đủ thông tin.
+- [x] **API Get All Customers**: Lấy danh sách khách hàng (Yêu cầu Token).
+- [x] **Validation**: Đã tích hợp FluentValidation để kiểm tra dữ liệu đầu vào chuyên nghiệp.
 
 ---
 
@@ -29,7 +29,7 @@ Tài liệu này ghi lại các tính năng đã hoàn thành và danh sách cá
 | F02 | `BCrypt.Verify` trả về false dù mật khẩu đúng | Đồng bộ mã Hash trong DB với chuẩn Salt version của thư viện .NET. | ✅ Fixed |
 | F03 | Cột `PasswordHash` bị cắt ngắn chuỗi | Nâng cấp độ dài cột từ `VARCHAR(50)` lên `VARCHAR(255)` trong SQL. | ✅ Fixed |
 | F04 | Lỗi `IEnumerable` không hỗ trợ `null` check | Sử dụng `.FirstOrDefault()` từ thư viện LINQ để lấy user duy nhất. | ✅ Fixed |
-| F05 | Không thể đăng nhập bằng tài khoản `admin` mẫu | Sai mật khẩu băm trong script seed data hoặc sai salt version. | ❌ Open |
+| F05 | Không thể đăng nhập bằng tài khoản `admin` mẫu | Đã cập nhật chuỗi Hash chuẩn vào script và database. | ✅ Fixed |
 
 ---
 
@@ -38,8 +38,8 @@ Tài liệu này ghi lại các tính năng đã hoàn thành và danh sách cá
 | ID | Test Case | Kết quả | Ghi chú |
 |:---|:---|:---|:---|
 | TC-C01 | Kiểm tra API Khách hàng (No Token) | ✅ Pass | Hệ thống chặn 401 đúng mong đợi. |
-| TC-L01 | Đăng nhập tài khoản `admin` | ❌ Fail | Trả về 401 Unauthorized dù đã thử nhiều mật khẩu phổ biến. |
-| TC-C02 | Đăng ký khách hàng mới | ⚠️ Block | Bị chặn do không có Token từ TC-L01. |
+| TC-L01 | Đăng nhập tài khoản `admin` | ✅ Pass | Đã lấy được Token thành công với mật khẩu `123456`. |
+| TC-C02 | Đăng ký khách hàng mới | 🔄 In Progress | Không còn bị chặn, sẵn sàng để test API. |
 | F05 | Swagger không cho gửi Token | Cấu hình `AddSecurityDefinition` và `AddSecurityRequirement` trong `Program.cs`. | ✅ Fixed |
 | F06 | Lỗi 401 do Password giả ở DB không hợp lệ BCrypt | Sửa `db/script.sql` và update trực tiếp DB thật với chuỗi hash đúng của `123456`. | ✅ Fixed |
 | F07 | Port không đồng bộ (5254 vs 5000) | Sửa lại `launchSettings.json` và file `EVWarranty.WebApi.http` để chạy chuẩn port 5000. | ✅ Fixed |

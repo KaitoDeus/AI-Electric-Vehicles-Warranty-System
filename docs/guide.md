@@ -75,122 +75,13 @@ _Lưu ý: Tham số `--no-onconfiguring` giúp tách biệt chuỗi kết nối 
 
 ---
 
----
-
-## 🛠️ 4. Nguyên tắc Code "Sạch" & Tối ưu
-
-### A. Sử dụng Repository Pattern & Unit of Work
-
-Đừng gọi trực tiếp DbContext trong Controller. Hãy bọc nó qua các Repository để sau này nếu bạn đổi DB (ví dụ sang PostgreSQL), bạn không phải sửa code ở tầng WebAPI.
-
-### B. Dependency Injection (DI)
-
-Luôn đăng ký các Service trong `Program.cs`.
-
-- **Scoped:** Cho các dịch vụ xử lý Database (mỗi request một instance).
-- **Singleton:** Cho các dịch vụ dùng chung toàn hệ thống (như AI Engine).
-
-### C. Xử lý bất đồng bộ (Async/Await)
-
-Luôn sử dụng `Task`, `async`, `await` cho mọi thao tác IO (đọc ghi DB, gọi API ngoài) để tránh làm nghẽn hệ thống khi có hàng nghìn nhân viên truy cập cùng lúc.
-
-### D. Tối ưu AI Analytics
-
-Khi viết module AI dự báo, hãy sử dụng **Background Tasks** (Worker Service) để xử lý các phép toán nặng ngầm, tránh làm người dùng phải chờ đợi trên giao diện.
-
----
-
-## 📝 5. Lời khuyên từ Mentor
-
-1.  **Đừng viết logic ở Controller:** Controller chỉ nên làm nhiệm vụ nhận dữ liệu và trả về kết quả. Toàn bộ tính toán hãy đẩy vào tầng **Application**.
-2.  **Sử dụng AutoMapper:** Để chuyển đổi giữa Entity (Database) sang DTO (Data Transfer Object) cho Frontend, giúp bảo mật dữ liệu nhạy cảm (như PasswordHash).
-3.  **Fluent Validation:** Sử dụng thư viện này để kiểm tra dữ liệu đầu vào (ví dụ: Số VIN phải đúng 17 ký tự) một cách chuyên nghiệp.
-
----
-
-## 🛠️ 6. Triển khai Code mẫu (Boilerplate)
-
-Dưới đây là cách triển khai chuẩn cho các nguyên tắc đã nêu ở Phần 4.
-
-### A. Generic Repository (Dùng chung cho mọi bảng)
-
-Tạo file `IGenericRepository.cs` trong tầng **Domain** (hoặc Application):
-
-```csharp
-public interface IGenericRepository<T> where T : class
-{
-    Task<T?> GetByIdAsync(int id);
-    Task<IEnumerable<T>> GetAllAsync();
-    Task AddAsync(T entity);
-    void Update(T entity);
-    void Delete(T entity);
-}
-```
-
-Triển khai tại tầng **Infrastructure**:
-
-```csharp
-public class GenericRepository<T> : IGenericRepository<T> where T : class
-{
-    protected readonly EvWarrantyDbContext _context;
-    public GenericRepository(EvWarrantyDbContext context) => _context = context;
-
-    public async Task<T?> GetByIdAsync(int id) => await _context.Set<T>().FindAsync(id);
-    public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().ToListAsync();
-    public async Task AddAsync(T entity) => await _context.Set<T>().AddAsync(entity);
-    public void Update(T entity) => _context.Set<T>().Update(entity);
-    public void Delete(T entity) => _context.Set<T>().Remove(entity);
-}
-```
-
-### B. Unit of Work (Quản lý Transaction)
-
-Giúp đảm bảo tính toàn vẹn dữ liệu. Tạo trong tầng **Application**:
-
-```csharp
-public interface IUnitOfWork : IDisposable
-{
-    IGenericRepository<Vehicle> Vehicles { get; }
-    IGenericRepository<WarrantyClaim> Claims { get; }
-    Task<int> CompleteAsync(); // Lưu tất cả thay đổi
-}
-```
-
-### C. Đăng ký Dependency Injection (DI)
-
-Trong file `Program.cs` của project **WebApi**, hãy thêm các dòng sau:
-
-```csharp
-// Đăng ký DbContext
-builder.Services.AddDbContext<EvWarrantyDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Đăng ký Repository & Unit of Work
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-```
-
----
-
-## 🛡️ 7. Bảo mật & Hiệu năng
-
-1.  **appsettings.json:** Tuyệt đối không để Password ở dạng văn bản thuần khi deploy thật. Sử dụng **User Secrets** hoặc **Environment Variables**.
-2.  **Pagination:** Luôn phân trang cho các API lấy danh sách (GetAll) để tránh làm sập server khi dữ liệu xe điện lên đến hàng triệu chiếc.
-3.  **Logging:** Cài đặt gói `Serilog.AspNetCore` để ghi lại lịch sử lỗi.
-
----
-
----
-
-## 🛡️ 8. Middleware & Request Pipeline
+## 🛡️ 4. Middleware & Request Pipeline
 
 ### ❓ Middleware là gì?
 
 Middleware là những đoạn code nằm trong pipeline (đường ống) xử lý yêu cầu của ASP.NET Core. Mỗi middleware có thể thực hiện logic trước và sau khi request đi qua nó (như Logging, Authentication, Error Handling).
 
 ### 📝 Triển khai Request Logging Middleware
-
-Tôi đã cài đặt cho bạn một middleware để theo dõi mọi truy cập vào hệ thống ngay tại terminal.
 
 1. **Cấu trúc:** Đặt trong `EVWarranty.WebApi/Middlewares/RequestLoggingMiddleware.cs`.
 2. **Tính năng:** Hiển thị Method (màu sắc), URL, Status Code và thời gian xử lý (ms).
@@ -208,278 +99,106 @@ app.UseMiddleware<RequestLoggingMiddleware>();
 
 ---
 
-## 🖥️ 9. Hướng dẫn chạy dự án trên Visual Studio 2022
+## 🛠️ 5. Nguyên tắc Code "Sạch" & Triển khai Boilerplate
 
-Để bắt đầu phát triển và kiểm thử API, hãy làm theo các bước sau:
+### A. Sử dụng Repository Pattern & Unit of Work
 
-1.  **Mở Solution:** Nhấp đúp vào file `EVWarrantySystem.sln`.
-2.  **Set Startup Project:**
-    - Chuột phải vào project **`EVWarranty.WebApi`**.
-    - Chọn **"Set as Startup Project"**.
-3.  **Kiểm tra Infrastructure:**
-    - Đảm bảo Docker Container chứa SQL Server đang chạy (`docker-compose up -d`).
-    - Kiểm tra chuỗi kết nối trong `appsettings.json` đã khớp với thông tin Docker.
-4.  **Chạy ứng dụng:**
-    - Nhấn **F5** (Debug) hoặc **Ctrl + F5** (Run).
-5.  **Truy cập Swagger:**
-    - Trình duyệt sẽ mở ra, hãy truy cập đường dẫn `https://localhost:<port>/swagger` để bắt đầu test API.
+Đừng gọi trực tiếp DbContext trong Controller. Hãy bọc nó qua các Repository để sau này nếu bạn đổi DB, bạn không phải sửa code ở tầng WebAPI.
+
+**IGenericRepository.cs (Domain):**
+```csharp
+public interface IGenericRepository<T> where T : class
+{
+    Task<T?> GetByIdAsync(int id);
+    Task<IEnumerable<T>> GetAllAsync();
+    Task AddAsync(T entity);
+    void Update(T entity);
+    void Delete(T entity);
+}
+```
+
+**IUnitOfWork.cs (Domain):**
+```csharp
+public interface IUnitOfWork : IDisposable
+{
+    IGenericRepository<Vehicle> Vehicles { get; }
+    IGenericRepository<User> Users { get; }
+    Task<int> CompleteAsync();
+}
+```
+
+### B. Dependency Injection (DI)
+
+Đăng ký trong `Program.cs`:
+```csharp
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+```
 
 ---
 
-## 🔐 10. Hướng dẫn triển khai tính năng Login (Đang thực hiện)
+## 🔐 6. Hướng dẫn triển khai tính năng Login
 
-Chúng ta đang xây dựng luồng xác thực cho hệ thống. Dưới đây là trình tự các bước đã và đang thực hiện:
+### Các bước thực hiện:
+1.  **Thiết kế DTOs**: Tạo `LoginRequest` và `LoginResponse`.
+2.  **AuthService**: Xử lý logic kiểm tra mật khẩu bằng BCrypt.
+3.  **Generate JWT**: Tạo chuỗi Token mã hóa.
+4.  **AuthController**: Endpoint `login` để trả về Token cho người dùng.
 
-### ✅ Các bước Mentor đã chuẩn bị:
-
-1.  **Cài đặt thư viện**: Đã thêm các gói cần thiết (`AutoMapper`, `FluentValidation`, `BCrypt`, `JWT`, `Configuration`) vào lớp **Application**.
-2.  **Cấu hình Repository**: Thêm `FindAsync` vào `IGenericRepository` và cập nhật `GenericRepository` để hỗ trợ tìm kiếm User.
-3.  **Thiết kế DTOs**: Tạo `LoginRequest` và `LoginResponse` để định nghĩa dữ liệu trao đổi.
-4.  **Định nghĩa Interface**: Tạo `IAuthService` để quy định các phương thức nghiệp vụ.
-
-### ✅ Thử thách bạn đã hoàn thành:
-
-1.  **Cập nhật Unit of Work**: Bạn đã khai báo và khởi tạo repository `Users`.
-2.  **Khởi tạo AuthService**: Bạn đã tạo lớp `AuthService` và xử lý thành công lỗi thư viện.
-3.  **Viết Logic cho `LoginAsync`**: Bạn đã triển khai xong phần kiểm tra Username và Password.
-4.  **Đăng ký DI**: Bạn đã đăng ký `IAuthService` vào `Program.cs` chính xác.
-5.  **Tạo AuthController**: Bạn đã tạo Controller và Endpoint `login` hoàn chỉnh. Rất tuyệt vời!
-
-### 🚩 Thử thách CUỐI CÙNG cho tính năng Login:
-
-#### 1. Thêm `using System.Linq;`:
-
-Trong file `AuthService.cs`, hãy thêm `using System.Linq;` ở đầu file để lệnh `.FirstOrDefault()` có thể hoạt động.
-
-#### 2. Viết hàm `GenerateJwtToken` (Trong `AuthService.cs`):
-
-Đây là bước "phù phép" để biến thông tin User thành một chuỗi mã hóa an toàn. Bạn hãy thêm các directive cần thiết (`using System.Security.Claims;`, `using System.IdentityModel.Tokens.Jwt;`, `using System.Text;`, `using Microsoft.IdentityModel.Tokens;`) và thêm hàm private này vào cuối lớp `AuthService`:
-
+### 🚩 Thử thách tạo JWT:
 ```csharp
 private string GenerateJwtToken(User user)
 {
     var jwtSettings = _configuration.GetSection("Jwt");
     var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
-
-    var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, user.Username),
-        new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-        new Claim(ClaimTypes.Role, "Admin") 
-    };
-
-    var tokenDescriptor = new SecurityTokenDescriptor
-    {
-        Subject = new ClaimsIdentity(claims),
-        Expires = DateTime.UtcNow.AddHours(3),
-        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-        Issuer = jwtSettings["Issuer"],
-        Audience = jwtSettings["Audience"]
-    };
-
-    var tokenHandler = new JwtSecurityTokenHandler();
-    var token = tokenHandler.CreateToken(tokenDescriptor);
+    // ... logic tạo claims và token ...
     return tokenHandler.WriteToken(token);
 }
 ```
 
-#### 3. Gọi hàm tạo Token:
+---
 
-Trong hàm `LoginAsync`, hãy thay thế `Token = ""` bằng `Token = GenerateJwtToken(user)`.
+## 🛠️ 7. Hướng dẫn API quản lý Khách hàng (Customer)
+
+Chào mừng bạn đến với module **Quản lý Khách hàng**. Chúng ta thực hiện theo 6 bước:
+
+- **Bước 1:** Thiết kế DTOs (`CustomerDto`, `CustomerCreateDto`).
+- **Bước 2:** Định nghĩa Interface `ICustomerService`.
+- **Bước 3:** Triển khai `CustomerService` với logic CRUD.
+- **Bước 4:** Cấu hình AutoMapper (Để chuyển đổi Entity ↔ DTO).
+- **Bước 5:** Đăng ký DI trong `Program.cs`.
+- **Bước 6:** Xây dựng `CustomersController`.
 
 ---
 
-### Mentor's Challenge:
+## 🖥️ 8. Hướng dẫn chạy dự án (Run & Test)
 
-🎉 **Bạn đã hoàn thành xuất sắc thử thách này!** Bạn đã tự tạo thành công `VehiclesController`, sử dụng `IUnitOfWork` để lấy danh sách xe và thậm chí đã biết áp dụng `[Authorize]` để bảo vệ API của mình.
-
-### Tiếp theo bạn muốn tôi thực hiện bước nào?
-
-- [x] Tôi đã viết lệnh tạo dự án thực tế cho bạn?
-- [x] Tôi đã viết code mẫu cho lớp **Domain** (Thực thể và Logic)?
-- [x] Triển khai Repository & Unit of Work (Hoàn thành).
-- [x] Thiết lập Logging Middleware (Hoàn thành).
-- [x] Cấu hình Swagger và JWT Authentication (Hoàn thành).
-- [x] Tôi sẽ hướng dẫn bạn viết API Login để lấy Token? (Hoàn thành)
-- [ ] **Tiếp theo:** Xây dựng API quản lý Khách hàng (Customer) & Đăng ký.
+1.  **Set Startup Project:** Chuột phải vào `EVWarranty.WebApi`.
+2.  **Docker:** Đảm bảo SQL Server đang chạy (`docker-compose up -d`).
+3.  **Run:** Nhấn **F5**.
+4.  **Swagger:** Truy cập `https://localhost:<port>/swagger`.
 
 ---
 
-## 🛠️ 11. Hướng dẫn API quản lý Khách hàng (Customer)
+## 🛠️ 9. Hướng dẫn sửa lỗi (Troubleshooting)
 
-Chào mừng bạn đến với thử thách tiếp theo! Chúng ta sẽ cùng nhau xây dựng module **Quản lý Khách hàng**. Trong hệ thống bảo hành, Khách hàng là đối tượng trung tâm, việc quản lý thông tin khách hàng chính xác là nền tảng để xử lý các yêu cầu bảo hành sau này.
+### 🔴 Lỗi Đăng nhập Admin (TC-L01)
+Nếu gặp lỗi 401 khi đăng nhập `admin`, có hai cách xử lý:
 
-Chúng ta sẽ thực hiện theo 6 bước chuẩn mực của **Clean Architecture**:
+1.  **Giải pháp tạm thời (Cho DB hiện tại)**: Chạy lệnh SQL sau để cập nhật mật khẩu cho môi trường hiện tại:
+    ```sql
+    UPDATE Users SET PasswordHash = '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my' WHERE Username = 'admin';
+    ```
 
-#### 📋 Danh sách kiểm tra (Checklist):
-- [ ] **Bước 1:** Thiết kế DTOs (Data Transfer Objects)
-- [ ] **Bước 2:** Định nghĩa Interface cho Service
-- [ ] **Bước 3:** Triển khai Service Logic
-- [ ] **Bước 4:** Cấu hình AutoMapper Mapping
-- [ ] **Bước 5:** Đăng ký Dependency Injection (DI)
-- [ ] **Bước 6:** Xây dựng Customers Controller
+2.  **Giải pháp lâu dài (Vĩnh viễn)**: Đã cập nhật chuỗi Hash này vào file `db/script.sql`. Từ nay về sau, khi khởi tạo dự án ở bất kỳ môi trường mới nào, hệ thống sẽ tự động có mật khẩu đúng (`123456`).
 
 ---
 
-#### 💡 Chi tiết từng bước:
+## 🚀 10. Lộ trình tiếp theo
 
-### Bước 1: Thiết kế DTOs (Lớp Application)
-**Tại sao?** Chúng ta không bao giờ trả về trực tiếp thực thể Database (Entity) cho người dùng vì lý do bảo mật và hiệu suất.
-
-1. Tạo thư mục: `EVWarranty.Application/DTOs/Customer`
-2. File `CustomerDto.cs` (Dữ liệu trả về):
-```csharp
-namespace EVWarranty.Application.DTOs.Customer;
-
-public class CustomerDto
-{
-    public int CustomerId { get; set; }
-    public string FullName { get; set; } = null!;
-    public string? Phone { get; set; }
-    public string? Email { get; set; }
-}
-```
-3. File `CustomerCreateDto.cs` (Dữ liệu nhận vào):
-```csharp
-using System.ComponentModel.DataAnnotations;
-
-namespace EVWarranty.Application.DTOs.Customer;
-
-public class CustomerCreateDto
-{
-    [Required(ErrorMessage = "Tên không được để trống")]
-    public string FullName { get; set; } = null!;
-
-    [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
-    public string? Phone { get; set; }
-
-    [EmailAddress(ErrorMessage = "Email không hợp lệ")]
-    public string? Email { get; set; }
-}
-```
-
-### Bước 2: Định nghĩa Interface (Lớp Application)
-**Tại sao?** Giúp code linh hoạt, dễ viết Unit Test.
-
-Tạo file `ICustomerService.cs` trong thư mục `Interfaces`:
-```csharp
-using EVWarranty.Application.DTOs.Customer;
-
-namespace EVWarranty.Application.Interfaces;
-
-public interface ICustomerService
-{
-    Task<IEnumerable<CustomerDto>> GetAllCustomersAsync();
-    Task<CustomerDto> RegisterCustomerAsync(CustomerCreateDto dto);
-}
-```
-
-### Bước 3: Triển khai Service Logic (Lớp Application)
-**Tại sao?** Đây là nơi chứa các quy tắc nghiệp vụ chính.
-
-Tạo file `CustomerService.cs` trong thư mục `Services`:
-```csharp
-using AutoMapper;
-using EVWarranty.Application.DTOs.Customer;
-using EVWarranty.Application.Interfaces;
-using EVWarranty.Domain.Entities;
-using EVWarranty.Domain.Entities.Interfaces;
-
-namespace EVWarranty.Application.Services;
-
-public class CustomerService : ICustomerService
-{
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-
-    public CustomerService(IUnitOfWork unitOfWork, IMapper mapper)
-    {
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-    }
-
-    public async Task<IEnumerable<CustomerDto>> GetAllCustomersAsync()
-    {
-        var customers = await _unitOfWork.Repository<Customer>().GetAllAsync();
-        return _mapper.Map<IEnumerable<CustomerDto>>(customers);
-    }
-
-    public async Task<CustomerDto> RegisterCustomerAsync(CustomerCreateDto dto)
-    {
-        var customer = _mapper.Map<Customer>(dto);
-        await _unitOfWork.Repository<Customer>().AddAsync(customer);
-        await _unitOfWork.CompleteAsync();
-        return _mapper.Map<CustomerDto>(customer);
-    }
-}
-```
-
-### Bước 4: Cấu hình Mapping (Lớp Application)
-**Tại sao?** Tự động hóa việc chuyển đổi dữ liệu.
-
-Tạo file `MappingProfile.cs` trong thư mục `Mappings`:
-```csharp
-using AutoMapper;
-using EVWarranty.Application.DTOs.Customer;
-using EVWarranty.Domain.Entities;
-
-namespace EVWarranty.Application.Mappings;
-
-public class MappingProfile : Profile
-{
-    public MappingProfile()
-    {
-        CreateMap<Customer, CustomerDto>();
-        CreateMap<CustomerCreateDto, Customer>();
-    }
-}
-```
-
-### Bước 5: Đăng ký Dependency Injection (DI) (Lớp WebAPI)
-Mở `Program.cs` ở tầng WebAPI và thêm:
-```csharp
-using EVWarranty.Application.Mappings;
-// ...
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
-```
-
-### Bước 6: Tạo API Controller (Lớp WebAPI)
-Tạo file `CustomersController.cs` trong thư mục `Controllers`:
-```csharp
-using EVWarranty.Application.DTOs.Customer;
-using EVWarranty.Application.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-namespace EVWarranty.WebApi.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-[Authorize]
-public class CustomersController : ControllerBase
-{
-    private readonly ICustomerService _customerService;
-
-    public CustomersController(ICustomerService customerService)
-    {
-        _customerService = customerService;
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll()
-    {
-        var result = await _customerService.GetAllCustomersAsync();
-        return Ok(result);
-    }
-
-    [HttpPost("register")]
-    public async Task<ActionResult<CustomerDto>> Register(CustomerCreateDto dto)
-    {
-        var result = await _customerService.RegisterCustomerAsync(dto);
-        return Ok(result);
-    }
-}
-```
+1.  **Refactoring**: Chuyển module Customer sang dùng AutoMapper hoàn chỉnh.
+2.  **Warranty Claims**: Xây dựng quy trình tạo và duyệt yêu cầu bảo hành.
+3.  **AI Integration**: Tích hợp Semantic Kernel để phân tích lỗi.
 
 ---
+*Cập nhật lần cuối: 28/04/2026 bởi Mentor AI*
