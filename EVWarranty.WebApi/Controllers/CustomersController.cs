@@ -7,7 +7,7 @@ namespace EVWarranty.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+[Authorize(Roles = "Admin,SC Staff,SC Technician")]
 public class CustomersController : ControllerBase
 {
     private readonly ICustomerService _customerService;

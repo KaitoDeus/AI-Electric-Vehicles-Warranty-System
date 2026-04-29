@@ -32,25 +32,34 @@ public class AuthService : IAuthService
             return null; // Không throw lỗi ở đây để tránh crash 500
         }
 
-        // 3. Khởi tạo Response (Tạm thời Token để trống)
+        // 3. Lấy thông tin Role thực tế
+        string roleName = "Guest";
+        if (user.RoleId.HasValue)
+        {
+            var role = await _unitOfWork.Repository<Role>().GetByIdAsync(user.RoleId.Value);
+            roleName = role?.RoleName ?? "Guest";
+        }
+
+        // 4. Khởi tạo Response
         return new LoginResponse
         {
             Username = user.Username,
             FullName = user.FullName ?? "",
-            Token = GenerateJwtToken(user)
+            Token = GenerateJwtToken(user, roleName),
+            Role = roleName
         };
     }
-    private string GenerateJwtToken(User user)
+    private string GenerateJwtToken(User user, string roleName)
     {
         var jwtSettings = _configuration.GetSection("Jwt");
         var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
 
         var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, user.Username),
-        new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-        new Claim(ClaimTypes.Role, "Admin") // Tạm thời để Admin
-    };
+        {
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+            new Claim(ClaimTypes.Role, roleName)
+        };
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
