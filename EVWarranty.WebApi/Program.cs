@@ -101,11 +101,16 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CustomerCreateValidator>();
 
+// Đăng kí Global Exception Handler Middleware
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 // 6. --- KHU VỰC 2: CẤU HÌNH PIPELINE ---
 
 app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseExceptionHandler(); 
 
 if (app.Environment.IsDevelopment())
 {
