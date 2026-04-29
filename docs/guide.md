@@ -106,6 +106,7 @@ app.UseMiddleware<RequestLoggingMiddleware>();
 Đừng gọi trực tiếp DbContext trong Controller. Hãy bọc nó qua các Repository để sau này nếu bạn đổi DB, bạn không phải sửa code ở tầng WebAPI.
 
 **IGenericRepository.cs (Domain):**
+
 ```csharp
 public interface IGenericRepository<T> where T : class
 {
@@ -118,6 +119,7 @@ public interface IGenericRepository<T> where T : class
 ```
 
 **IUnitOfWork.cs (Domain):**
+
 ```csharp
 public interface IUnitOfWork : IDisposable
 {
@@ -130,6 +132,7 @@ public interface IUnitOfWork : IDisposable
 ### B. Dependency Injection (DI)
 
 Đăng ký trong `Program.cs`:
+
 ```csharp
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -140,12 +143,14 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 ## 🔐 6. Hướng dẫn triển khai tính năng Login
 
 ### Các bước thực hiện:
+
 1.  **Thiết kế DTOs**: Tạo `LoginRequest` và `LoginResponse`.
 2.  **AuthService**: Xử lý logic kiểm tra mật khẩu bằng BCrypt.
 3.  **Generate JWT**: Tạo chuỗi Token mã hóa.
 4.  **AuthController**: Endpoint `login` để trả về Token cho người dùng.
 
 ### 🚩 Thử thách tạo JWT:
+
 ```csharp
 private string GenerateJwtToken(User user)
 {
@@ -162,43 +167,68 @@ private string GenerateJwtToken(User user)
 
 Chào mừng bạn đến với module **Quản lý Khách hàng**. Chúng ta thực hiện theo 6 bước:
 
-- **Bước 1:** Thiết kế DTOs (`CustomerDto`, `CustomerCreateDto`).
-- **Bước 2:** Định nghĩa Interface `ICustomerService`.
-- **Bước 3:** Triển khai `CustomerService` với logic CRUD.
-- **Bước 4:** Cấu hình AutoMapper (Để chuyển đổi Entity ↔ DTO).
-- **Bước 5:** Đăng ký DI trong `Program.cs`.
-- **Bước 6:** Xây dựng `CustomersController`.
+### 🛡️ 7. Quy trình triển khai Module mới (Chuẩn Mentor)
+
+Khi phát triển một module mới (ví dụ: Warranty Claims), hãy tuân thủ các bước sau để đảm bảo tính **Clean** và **Secure**:
+
+- **Bước 1 (Định danh):** Luôn sử dụng `Guid` (Uniqueidentifier) cho Khóa chính (PK) để tránh lộ dữ liệu kinh doanh qua ID tuần tự.
+- **Bước 2 (DTOs):** Thiết kế DTOs tách biệt hoàn toàn với Entity. Tuyệt đối không trả về Entity trực tiếp ra API.
+- **Bước 3 (Validation):** Sử dụng `FluentValidation` để áp dụng quy chuẩn dữ liệu:
+  - **Email:** Phải có định dạng đầy đủ (ví dụ: `.com`, `.vn`).
+  - **IDNumber:** Phải là 12 chữ số (Chuẩn CCCD Việt Nam).
+  - **Phone:** 10-11 chữ số.
+- **Bước 4 (Manual Mapping):** Thay vì dùng AutoMapper, hãy viết code mapping thủ công trong Service. Việc này giúp bạn kiểm soát hoàn toàn dữ liệu và dễ dàng Debug khi có lỗi.
+- **Bước 5 (Authorization):** Luôn gắn nhãn `[Authorize(Roles = "...")]` cho Controller. Phải xác định rõ "Ai được quyền làm gì" trước khi viết code logic.
+- **Bước 6 (Service & Repository):** Triển khai logic qua Interface và sử dụng `UnitOfWork` để quản lý Transaction.
 
 ---
 
-## 🖥️ 8. Hướng dẫn chạy dự án (Run & Test)
+### 🔐 8. Hệ thống Phân quyền (Role-based)
 
-1.  **Set Startup Project:** Chuột phải vào `EVWarranty.WebApi`.
-2.  **Docker:** Đảm bảo SQL Server đang chạy (`docker-compose up -d`).
-3.  **Run:** Nhấn **F5**.
-4.  **Swagger:** Truy cập `https://localhost:<port>/swagger`.
+Dự án sử dụng cơ chế phân quyền dựa trên Role được lưu trong JWT Token. Các Role hiện có:
 
----
+- `Admin`: Toàn quyền hệ thống.
+- `SC Staff`: Nhân viên trung tâm dịch vụ (Quản lý xe, khách hàng, tạo yêu cầu bảo hành).
+- `SC Technician`: Kỹ thuật viên (Kiểm tra xe, cập nhật trạng thái sửa chữa).
+- `EVM Staff`: Nhân viên hãng (Duyệt yêu cầu bảo hành, quản lý chiến dịch).
 
-## 🛠️ 9. Hướng dẫn sửa lỗi (Troubleshooting)
+**Cách sử dụng trong Controller:**
 
-### 🔴 Lỗi Đăng nhập Admin (TC-L01)
-Nếu gặp lỗi 401 khi đăng nhập `admin`, có hai cách xử lý:
-
-1.  **Giải pháp tạm thời (Cho DB hiện tại)**: Chạy lệnh SQL sau để cập nhật mật khẩu cho môi trường hiện tại:
-    ```sql
-    UPDATE Users SET PasswordHash = '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my' WHERE Username = 'admin';
-    ```
-
-2.  **Giải pháp lâu dài (Vĩnh viễn)**: Đã cập nhật chuỗi Hash này vào file `db/script.sql`. Từ nay về sau, khi khởi tạo dự án ở bất kỳ môi trường mới nào, hệ thống sẽ tự động có mật khẩu đúng (`123456`).
+```csharp
+[Authorize(Roles = "Admin,SC Staff")]
+public class YourController : ControllerBase { ... }
+```
 
 ---
 
-## 🚀 10. Lộ trình tiếp theo
+### 🖥️ 9. Hướng dẫn chạy dự án (Run & Test)
 
-1.  **Refactoring**: Chuyển module Customer sang dùng AutoMapper hoàn chỉnh.
-2.  **Warranty Claims**: Xây dựng quy trình tạo và duyệt yêu cầu bảo hành.
-3.  **AI Integration**: Tích hợp Semantic Kernel để phân tích lỗi.
+1.  **Database:** Luôn chạy file `db/script.sql` mới nhất khi có thay đổi cấu trúc GUID.
+2.  **Docker:** SQL Server 2022 phải đang chạy (`docker-compose up -d`).
+3.  **Run:** Sử dụng lệnh `dotnet watch run` tại thư mục `EVWarranty.WebApi`.
+4.  **Swagger:** Truy cập `http://localhost:5000/swagger`.
+5.  **Authorization Test:**
+    - Dùng tài khoản `evm_staff` để test lỗi **403 Forbidden** khi vào API Khách hàng.
+    - Dùng tài khoản `sc_staff` hoặc `admin` để truy cập thành công.
+    - Chú ý: Token có thời hạn 30 phút, nếu bị lỗi 401 hãy đăng nhập lại để làm mới Token.
 
 ---
-*Cập nhật lần cuối: 28/04/2026 bởi Mentor AI*
+
+## 🛡️ 10. Global Exception Handling
+
+Hệ thống sử dụng `IExceptionHandler` (.NET 8) để bắt mọi lỗi Runtime và trả về định dạng `ProblemDetails` chuẩn RFC 7807. Điều này giúp bảo mật thông tin hệ thống và cung cấp thông báo lỗi nhất quán cho Frontend.
+
+- **Handler**: `GlobalExceptionHandler.cs` trong thư mục Middlewares.
+- **Đăng ký**: Đã cấu hình `AddExceptionHandler` và `UseExceptionHandler` trong `Program.cs`.
+
+---
+
+## 🚀 11. Lộ trình tiếp theo (Roadmap)
+
+1.  **Phase 3 - Warranty Claims**: Xây dựng nghiệp vụ cốt lõi: Tiếp nhận yêu cầu bảo hành và quy trình xét duyệt.
+2.  **Phase 3 - AI Integration**: Tích hợp AI để phân tích lỗi và phát hiện gian lận bảo hành.
+3.  **Phase 4 - Frontend**: Phát triển giao diện Dashboard và Portal.
+
+---
+
+_Cập nhật lần cuối: 29/04/2026 bởi Mentor AI_

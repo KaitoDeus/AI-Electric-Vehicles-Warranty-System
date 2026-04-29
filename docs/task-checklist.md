@@ -17,11 +17,13 @@ Dưới đây là lộ trình chi tiết của dự án, giúp theo dõi những
 - [x] Triển khai Generic Repository & Unit of Work mẫu.
 - [x] Thiết lập Pipeline Logging Middleware (URL & Method).
 - [x] Cấu hình Dependency Injection (DI) trong WebApi.
-- [x] Thiết lập Authentication & Authorization (JWT Token).
-- [x] Cài đặt AutoMapper và FluentValidation.
+- [x] Thiết lập Authentication & Authorization (Đã test phân quyền đa tầng).
+- [x] Gỡ bỏ AutoMapper và chuyển sang **Manual Mapping** (Bảo mật cao).
+- [x] Tích hợp **FluentValidation** (Email chuẩn, CCCD 12 số).
 - [x] Viết API quản lý Người dùng (Chức năng Login hoàn tất).
 - [x] Viết API quản lý Xe (Vehicle) - Cơ bản (Lấy danh sách).
-- [x] Viết API quản lý Khách hàng (Customer) và Đăng ký (Register).
+- [x] Viết API quản lý Khách hàng (Customer) - Đăng ký (GUID IDs).
+- [x] Triển khai **Global Exception Handling** (Hoàn tất Giai đoạn 2).
 
 ## 🛠️ Giai đoạn 3: Nghiệp vụ Bảo hành & AI (Sắp tới)
 
@@ -42,4 +44,4 @@ Dưới đây là lộ trình chi tiết của dự án, giúp theo dõi những
 
 ## 🚀 Mục tiêu hiện tại
 
-_Hoàn thành việc triển khai Repository Pattern để bắt đầu viết các API đầu tiên._
+_Hoàn thành Global Exception Handling (Phase 2) và chuẩn bị thiết kế Module nghiệp vụ cốt lõi: Warranty Claims (Phase 3)._
