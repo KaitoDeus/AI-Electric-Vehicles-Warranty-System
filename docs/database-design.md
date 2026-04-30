@@ -123,4 +123,67 @@ CREATE TABLE ClaimAttachments (
     FilePath NVARCHAR(1000),
     UploadedAt DATETIME DEFAULT GETDATE()
 );
+
+-- 4. E-commerce & Customer Portal (Mới)
+CREATE TABLE Favorites (
+    FavoriteID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT FOREIGN KEY REFERENCES Customers(CustomerID),
+    VIN VARCHAR(17) FOREIGN KEY REFERENCES Vehicles(VIN), -- Lưu VIN mẫu xe quan tâm
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE Carts (
+    CartID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT FOREIGN KEY REFERENCES Customers(CustomerID),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME
+);
+
+CREATE TABLE CartItems (
+    CartItemID INT PRIMARY KEY IDENTITY(1,1),
+    CartID INT FOREIGN KEY REFERENCES Carts(CartID),
+    PartID INT NULL FOREIGN KEY REFERENCES Parts(PartID), -- Phụ kiện
+    ModelName NVARCHAR(100) NULL, -- Hoặc VIN xe mới
+    Quantity INT DEFAULT 1,
+    Price DECIMAL(18,2)
+);
+
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT FOREIGN KEY REFERENCES Customers(CustomerID),
+    OrderDate DATETIME DEFAULT GETDATE(),
+    TotalAmount DECIMAL(18,2),
+    Status NVARCHAR(50), -- Pending, Paid, Shipping, Completed, Cancelled
+    ShippingAddress NVARCHAR(500),
+    PaymentMethod NVARCHAR(50) -- VietQR, VNPAY, MoMo
+);
+
+CREATE TABLE OrderItems (
+    OrderItemID INT PRIMARY KEY IDENTITY(1,1),
+    OrderID INT FOREIGN KEY REFERENCES Orders(OrderID),
+    PartID INT NULL FOREIGN KEY REFERENCES Parts(PartID),
+    ModelName NVARCHAR(100) NULL,
+    Quantity INT,
+    UnitPrice DECIMAL(18,2)
+);
+
+CREATE TABLE Invoices (
+    InvoiceID INT PRIMARY KEY IDENTITY(1,1),
+    OrderID INT FOREIGN KEY REFERENCES Orders(OrderID),
+    InvoiceNumber VARCHAR(50) UNIQUE,
+    IssuedDate DATETIME DEFAULT GETDATE(),
+    TaxCode VARCHAR(20),
+    TotalAmount DECIMAL(18,2),
+    FilePath NVARCHAR(1000) -- Lưu link file PDF
+);
+
+CREATE TABLE Payments (
+    PaymentID INT PRIMARY KEY IDENTITY(1,1),
+    OrderID INT FOREIGN KEY REFERENCES Orders(OrderID),
+    TransactionID VARCHAR(100), -- ID từ VNPAY/MoMo
+    Amount DECIMAL(18,2),
+    PaymentDate DATETIME DEFAULT GETDATE(),
+    Status NVARCHAR(50) -- Success, Failed
+);
+
 ```

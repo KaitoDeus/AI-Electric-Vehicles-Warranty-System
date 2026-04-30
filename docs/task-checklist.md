@@ -25,7 +25,16 @@ Dưới đây là lộ trình chi tiết của dự án, giúp theo dõi những
 - [x] Viết API quản lý Khách hàng (Customer) - Đăng ký (GUID IDs).
 - [x] Triển khai **Global Exception Handling** (Hoàn tất Giai đoạn 2).
 
-## 🛠️ Giai đoạn 3: Nghiệp vụ Bảo hành & AI (Sắp tới)
+## 🛒 Giai đoạn 3: E-commerce & Customer Portal (Mới)
+
+- [ ] Thiết kế ERD bổ sung (Cart, Order, Invoice, Favorite, Payment).
+- [ ] Xây dựng Landing Page giới thiệu sản phẩm (Showroom).
+- [ ] Module quản lý Giỏ hàng (Cart) & Sản phẩm yêu thích (Favorite).
+- [ ] Hệ thống Đặt hàng & Quản lý đơn hàng (Order Management).
+- [ ] Tích hợp cổng thanh toán (VietQR, VNPAY, MoMo).
+- [ ] Tự động xuất hoá đơn (Invoice) PDF.
+
+## 🛠️ Giai đoạn 4: Nghiệp vụ Bảo hành & AI (Tiếp tục)
 
 - [ ] Xây dựng quy trình tạo yêu cầu bảo hành (Warranty Claim).
 - [ ] Module quản lý hình ảnh/tài liệu đính kèm (Claim Attachments).
@@ -33,7 +42,7 @@ Dưới đây là lộ trình chi tiết của dự án, giúp theo dõi những
 - [ ] Tích hợp AI Engine để phân tích và dự báo lỗi hỏng hóc.
 - [ ] Xây dựng báo cáo thống kê (Dashboard).
 
-## 🌐 Giai đoạn 4: Frontend & Kiểm thử (Tương lai)
+## 🌐 Giai đoạn 5: Frontend & Kiểm thử (Tương lai)
 
 - [ ] Xây dựng giao diện Admin/Staff bằng Blazor (hoặc React).
 - [ ] Viết Unit Test cho các lớp nghiệp vụ.
@@ -44,4 +53,4 @@ Dưới đây là lộ trình chi tiết của dự án, giúp theo dõi những
 
 ## 🚀 Mục tiêu hiện tại
 
-_Hoàn thành Global Exception Handling (Phase 2) và chuẩn bị thiết kế Module nghiệp vụ cốt lõi: Warranty Claims (Phase 3)._
+_Hoàn thành thiết kế Database cho phần E-commerce (Phase 3) và bắt đầu triển khai API Giỏ hàng/Đơn hàng._

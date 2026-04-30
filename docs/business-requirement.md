@@ -1,7 +1,8 @@
 # AI Powered EV Warranty Management System
-*Phần mềm quản lý bảo hành xe điện từ hãng*
+*Phần mềm quản lý bảo hành và kinh doanh xe điện tích hợp AI*
 
 ## Actors
+- **Customer**: Khách hàng (Người mua xe và sử dụng dịch vụ)
 - **SC Staff**: Nhân viên trung tâm dịch vụ
 - **SC Technician**: Kỹ thuật viên trung tâm dịch vụ
 - **EVM Staff**: Nhân viên hãng sản xuất xe điện
@@ -9,7 +10,36 @@
 
 ---
 
-## 1. Chức năng cho Trung tâm dịch vụ (SC Staff, SC Technician)
+## 1. Landing Page & Showroom (Cho mọi đối tượng)
+- **Giới thiệu sản phẩm**: Hiển thị danh sách các dòng xe điện, thông số kỹ thuật, hình ảnh 360 độ.
+- **Tin tức & Sự kiện**: Các chiến dịch ưu đãi, bài viết giới thiệu công nghệ AI trên xe.
+- **Tra cứu bảo hành**: Khách có thể nhập số VIN để kiểm tra thời hạn bảo hành mà không cần đăng nhập.
+
+---
+
+## 2. Chức năng cho Khách hàng (Customer Portal)
+
+### a. Quản lý cá nhân & Sản phẩm yêu thích
+- **Yêu thích (Favorite)**: Lưu lại các mẫu xe quan tâm để theo dõi giá hoặc nhận thông báo.
+- **Quản lý hồ sơ**: Cập nhật thông tin cá nhân, địa chỉ nhận hàng.
+
+### b. Giỏ hàng & Đặt hàng
+- **Giỏ hàng (Cart)**: Thêm/Bớt xe hoặc phụ kiện, tính toán tổng tiền.
+- **Đặt hàng (Order)**: Tạo đơn mua xe/phụ kiện.
+- **Theo dõi đơn hàng**: Trạng thái từ Chờ xác nhận → Đang chuẩn bị → Đang giao → Hoàn tất.
+
+### c. Thanh toán & Hoá đơn
+- **Thanh toán đa kênh**: Tích hợp các cổng thanh toán (VietQR, VNPAY, MoMo).
+- **Hoá đơn điện tử (Invoice)**: Tự động xuất hoá đơn sau khi thanh toán thành công, có thể tải về file PDF.
+
+### d. Quản lý xe sở hữu & Bảo hành
+- **Danh sách xe**: Xem các xe đã mua và thông tin chi tiết từng xe.
+- **Yêu cầu hỗ trợ**: Gửi yêu cầu tư vấn hoặc báo lỗi nhanh cho trung tâm dịch vụ.
+
+---
+
+## 3. Chức năng cho Trung tâm dịch vụ (SC Staff, SC Technician)
+*(Giữ nguyên các chức năng cũ và bổ sung thêm kết nối với đơn hàng từ khách)*
 
 ### a. Quản lý hồ sơ xe & khách hàng
 - **Đăng ký xe**: Theo số VIN.
@@ -21,41 +51,16 @@
 - **Tài liệu đính kèm**: Báo cáo kiểm tra, hình ảnh, thông tin chẩn đoán.
 - **Theo dõi trạng thái**: Đã gửi → Chờ duyệt → Được chấp nhận → Đã xử lý.
 
-### c. Thực hiện bảo hành
-- **Nhận phụ tùng**: Tiếp nhận linh kiện thay thế từ hãng.
-- **Quản lý tiến độ**: Theo dõi quá trình sửa chữa hoặc thay thế.
-- **Bàn giao**: Cập nhật kết quả bảo hành và thực hiện bàn giao xe cho khách.
-
-### d. Thực hiện chiến dịch từ hãng (Recall/Service Campaigns)
-- **Tiếp nhận danh sách**: Nhận danh sách xe thuộc diện triệu hồi hoặc chiến dịch dịch vụ.
-- **Thông báo & Lịch hẹn**: Gửi thông báo cho khách hàng, quản lý lịch hẹn.
-- **Xử lý & Báo cáo**: Thực hiện xử lý theo hướng dẫn và báo cáo kết quả về hãng.
-
-### e. Quản lý nội bộ
-- **Phân công**: Giao việc cho kỹ thuật viên xử lý từng ca bảo hành.
-- **Hiệu suất**: Theo dõi thời gian và hiệu quả xử lý.
-- **Lưu trữ**: Hồ sơ bảo hành phục vụ công tác kiểm tra và báo cáo định kỳ.
-
 ---
 
-## 2. Chức năng cho Hãng sản xuất xe (EVM Staff, Admin)
+## 4. Chức năng cho Hãng sản xuất xe (EVM Staff, Admin)
+*(Giữ nguyên các chức năng cũ và bổ sung quản lý kinh doanh)*
 
-### a. Quản lý sản phẩm & phụ tùng
-- **Cơ sở dữ liệu**: Quản lý bộ phận xe điện (Pin, Mô-tơ, BMS, Inverter, Bộ sạc...).
-- **Định danh**: Liên kết số seri phụ tùng với số VIN của xe.
-- **Chính sách**: Thiết lập và quản lý thời hạn, phạm vi, điều kiện bảo hành.
+### a. Quản lý kinh doanh & Sản phẩm
+- **Quản lý Inventory**: Theo dõi lượng xe và phụ tùng sẵn có trong kho hãng.
+- **Quản lý đơn hàng**: Duyệt và điều phối đơn hàng từ khách hàng về các trung tâm phân phối/dịch vụ.
 
-### b. Quản lý yêu cầu bảo hành
+### b. Quản lý yêu cầu bảo hành & AI
 - **Phê duyệt**: Tiếp nhận và xét duyệt các yêu cầu từ trung tâm dịch vụ.
-- **Luồng xử lý**: Tiếp nhận → Xác thực → Xử lý → Hoàn tất.
-- **Tài chính**: Quản lý chi phí bảo hành do hãng chi trả.
-- **Chiến dịch**: Khởi tạo và quản lý các chương trình Recall/Service campaign.
+- **AI Analytics**: Sử dụng AI để phân tích nguyên nhân lỗi phổ biến và dự báo hỏng hóc từ dữ liệu vận hành.
 
-### c. Chuỗi cung ứng phụ tùng bảo hành
-- **Tồn kho**: Quản lý kho linh kiện phục vụ bảo hành.
-- **Phân bổ**: Điều phối phụ tùng thay thế cho các trung tâm dịch vụ.
-- **Cảnh báo**: Tự động thông báo khi tồn kho thấp.
-
-### d. Báo cáo & Phân tích
-- **Thống kê**: Phân tích tỷ lệ hỏng hóc theo model, loại phụ tùng hoặc khu vực địa lý.
-- **AI Analytics**: Sử dụng AI để phân tích nguyên nhân lỗi phổ biến và dự báo chi phí bảo hành trong tương lai.
