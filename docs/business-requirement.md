@@ -10,10 +10,18 @@
 
 ---
 
+## 0. Hệ thống Xác thực & Người dùng (Authentication)
+- **Đăng nhập & Đăng ký**: Hỗ trợ đăng nhập bằng tài khoản nội bộ và OAuth (Google, Facebook...).
+- **Khôi phục mật khẩu**: Chức năng quên mật khẩu qua Email (gửi mã OTP hoặc xác thực qua Google Email).
+- **Phân quyền Role-based**: Kiểm soát truy cập chặt chẽ cho từng Actor.
+
+---
+
 ## 1. Landing Page & Showroom (Cho mọi đối tượng)
 - **Giới thiệu sản phẩm**: Hiển thị danh sách các dòng xe điện, thông số kỹ thuật, hình ảnh 360 độ.
 - **Tin tức & Sự kiện**: Các chiến dịch ưu đãi, bài viết giới thiệu công nghệ AI trên xe.
 - **Tra cứu bảo hành**: Khách có thể nhập số VIN để kiểm tra thời hạn bảo hành mà không cần đăng nhập.
+- **Recommendation System**: Hệ thống gợi ý sản phẩm (xe, phụ kiện) thông minh dựa trên hành vi và sự quan tâm của người dùng.
 
 ---
 
@@ -35,6 +43,9 @@
 ### d. Quản lý xe sở hữu & Bảo hành
 - **Danh sách xe**: Xem các xe đã mua và thông tin chi tiết từng xe.
 - **Yêu cầu hỗ trợ**: Gửi yêu cầu tư vấn hoặc báo lỗi nhanh cho trung tâm dịch vụ.
+
+### e. Đánh giá & Phản hồi (Rating & Review)
+- **Đánh giá sản phẩm**: Khách hàng có thể viết nhận xét, đánh giá (rating) cho các dòng xe và phụ kiện đã trải nghiệm/đã mua.
 
 ---
 

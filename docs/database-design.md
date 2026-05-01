@@ -6,6 +6,7 @@
 *   **Roles**: Lưu các chức danh (Admin, EVM Staff, SC Staff, SC Technician).
 *   **ServiceCenters**: Danh sách các trung tâm dịch vụ trên toàn quốc.
 *   **Users**: Tài khoản người dùng, liên kết với Role và ServiceCenter.
+*   **OTP_Tokens** & **User_OAuth**: Hỗ trợ quên mật khẩu bằng OTP và đăng nhập qua mạng xã hội (Google, Facebook).
 
 ### Nhóm 2: Sản phẩm & Khách hàng
 *   **Customers**: Thông tin chủ sở hữu xe.
@@ -17,6 +18,11 @@
 *   **WarrantyPolicies**: Chính sách bảo hành (ví dụ: Pin bảo hành 5 năm hoặc 50.000km).
 *   **WarrantyClaims**: Các yêu cầu bảo hành được gửi lên.
 *   **ClaimAttachments**: Hình ảnh bằng chứng, báo cáo chẩn đoán lỗi.
+
+### Nhóm 4: E-commerce & Customer Portal
+*   **Carts**, **Orders**, **Invoices**, **Payments**: Quản lý mua hàng và thanh toán.
+*   **Favorites**: Sản phẩm yêu thích.
+*   **Reviews**: Đánh giá sản phẩm.
 
 ---
 
@@ -53,6 +59,22 @@ CREATE TABLE Users (
     RoleID INT FOREIGN KEY REFERENCES Roles(RoleID),
     SCID INT NULL FOREIGN KEY REFERENCES ServiceCenters(SCID),
     IsActive BIT DEFAULT 1
+);
+
+CREATE TABLE OTP_Tokens (
+    TokenID INT PRIMARY KEY IDENTITY(1,1),
+    UserID INT FOREIGN KEY REFERENCES Users(UserID),
+    OTPCode VARCHAR(10) NOT NULL,
+    ExpiresAt DATETIME NOT NULL,
+    IsUsed BIT DEFAULT 0
+);
+
+CREATE TABLE User_OAuth (
+    OAuthID INT PRIMARY KEY IDENTITY(1,1),
+    UserID INT FOREIGN KEY REFERENCES Users(UserID),
+    Provider VARCHAR(50) NOT NULL,
+    ProviderUserID VARCHAR(255) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE()
 );
 
 -- 2. Products & Customers
@@ -137,6 +159,16 @@ CREATE TABLE Carts (
     CustomerID INT FOREIGN KEY REFERENCES Customers(CustomerID),
     CreatedAt DATETIME DEFAULT GETDATE(),
     UpdatedAt DATETIME
+);
+
+CREATE TABLE Reviews (
+    ReviewID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT FOREIGN KEY REFERENCES Customers(CustomerID),
+    PartID INT NULL FOREIGN KEY REFERENCES Parts(PartID),
+    VIN VARCHAR(17) NULL FOREIGN KEY REFERENCES Vehicles(VIN),
+    Rating INT CHECK (Rating >= 1 AND Rating <= 5),
+    Comment NVARCHAR(MAX),
+    CreatedAt DATETIME DEFAULT GETDATE()
 );
 
 CREATE TABLE CartItems (

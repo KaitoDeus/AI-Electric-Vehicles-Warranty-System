@@ -228,10 +228,10 @@ Hệ thống sử dụng `IExceptionHandler` (.NET 8) để bắt mọi lỗi Ru
 Dưới đây là kế hoạch chi tiết để bạn hoàn thiện dự án, tập trung vào cả E-commerce và Nghiệp vụ Bảo hành.
 
 ### 🏁 Tuần 1: Cấu trúc E-commerce & Auth mở rộng
-*   **Ngày 1:** Cập nhật Database với các bảng mới (`Carts`, `Orders`, `Invoices`, `Favorites`, `Payments`). Chạy lại lệnh Scaffold để cập nhật Entities.
-*   **Ngày 2:** Mở rộng `AuthService`: Thêm Role `Customer`, xử lý đăng ký tài khoản cho khách hàng.
-*   **Ngày 3:** Triển khai API quản lý Sản phẩm (Xe và Phụ kiện) dành cho Landing Page (Public API).
-*   **Ngày 4:** Xây dựng API "Sản phẩm yêu thích" (Favorite): Thêm/Xóa/Lấy danh sách cho Customer.
+*   **Ngày 1:** Cập nhật Database với các bảng mới (`Carts`, `Orders`, `Invoices`, `Favorites`, `Payments`, `Reviews`, `OTP_Tokens`, `User_OAuth`). Chạy lại Scaffold.
+*   **Ngày 2:** Mở rộng `AuthService`: OTP quên mật khẩu, OAuth (Google), xử lý đăng ký tài khoản Customer.
+*   **Ngày 3:** Triển khai API Sản phẩm cho Landing Page, tích hợp Recommendation System cơ bản.
+*   **Ngày 4:** Xây dựng API Sản phẩm yêu thích (Favorite) và Đánh giá (Rating & Review).
 *   **Ngày 5:** Tối ưu hóa hiệu năng truy vấn cho danh mục sản phẩm (Sử dụng Eager Loading và DTOs).
 
 ### 🛒 Tuần 2: Giỏ hàng & Quy trình Đặt hàng

@@ -9,6 +9,8 @@ Tài liệu này ghi lại các tính năng đã hoàn thành và danh sách cá
 - [x] **Mã hóa BCrypt**: Mật khẩu được lưu dưới dạng băm (hashed) an toàn.
 - [x] **Cấp phát JWT**: Trả về Token kèm thông tin người dùng (Claims) khi đăng nhập đúng.
 - [x] **Phân quyền cơ bản**: Token đã bao gồm Role (Admin/Staff/Customer).
+- [ ] **Quên mật khẩu**: Gửi OTP qua Email và đặt lại mật khẩu mới.
+- [ ] **Đăng nhập OAuth**: Đăng nhập bằng tài khoản Google.
 
 ### 2. Quản lý Xe (Vehicle Management - Cơ bản)
 - [x] **API Get All**: Lấy danh sách xe từ Database thông qua Unit of Work.

@@ -23,13 +23,14 @@ Dưới đây là lộ trình chi tiết của dự án, giúp theo dõi những
 - [x] Viết API quản lý Người dùng (Chức năng Login hoàn tất).
 - [x] Viết API quản lý Xe (Vehicle) - Cơ bản (Lấy danh sách).
 - [x] Viết API quản lý Khách hàng (Customer) - Đăng ký (GUID IDs).
-- [x] Triển khai **Global Exception Handling** (Hoàn tất Giai đoạn 2).
+- [x] Triển khai **Global Exception Handling**.
+- [ ] Mở rộng Auth: Chức năng Quên mật khẩu (OTP) và Đăng nhập OAuth (Google).
 
 ## 🛒 Giai đoạn 3: E-commerce & Customer Portal (Mới)
 
 - [ ] Thiết kế ERD bổ sung (Cart, Order, Invoice, Favorite, Payment).
-- [ ] Xây dựng Landing Page giới thiệu sản phẩm (Showroom).
-- [ ] Module quản lý Giỏ hàng (Cart) & Sản phẩm yêu thích (Favorite).
+- [ ] Xây dựng Landing Page giới thiệu sản phẩm, tích hợp Recommendation System.
+- [ ] Module quản lý Giỏ hàng (Cart), Yêu thích (Favorite) và Đánh giá (Rating & Review).
 - [ ] Hệ thống Đặt hàng & Quản lý đơn hàng (Order Management).
 - [ ] Tích hợp cổng thanh toán (VietQR, VNPAY, MoMo).
 - [ ] Tự động xuất hoá đơn (Invoice) PDF.
