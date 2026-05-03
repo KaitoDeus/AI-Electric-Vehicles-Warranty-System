@@ -24,6 +24,8 @@ IF OBJECT_ID('VehicleParts', 'U') IS NOT NULL DROP TABLE VehicleParts;
 IF OBJECT_ID('Parts', 'U') IS NOT NULL DROP TABLE Parts;
 IF OBJECT_ID('Vehicles', 'U') IS NOT NULL DROP TABLE Vehicles;
 IF OBJECT_ID('Customers', 'U') IS NOT NULL DROP TABLE Customers;
+IF OBJECT_ID('OtpTokens', 'U') IS NOT NULL DROP TABLE OtpTokens;
+IF OBJECT_ID('UserOAuth', 'U') IS NOT NULL DROP TABLE UserOAuth;
 IF OBJECT_ID('Users', 'U') IS NOT NULL DROP TABLE Users;
 IF OBJECT_ID('ServiceCenters', 'U') IS NOT NULL DROP TABLE ServiceCenters;
 IF OBJECT_ID('Roles', 'U') IS NOT NULL DROP TABLE Roles;
@@ -48,12 +50,35 @@ CREATE TABLE ServiceCenters (
 CREATE TABLE Users (
     UserID INT PRIMARY KEY IDENTITY(1,1),
     Username VARCHAR(50) NOT NULL UNIQUE,
-    PasswordHash VARCHAR(255) NOT NULL,
+    PasswordHash VARCHAR(255) NULL, -- Cho phép null nếu dùng OAuth
     FullName NVARCHAR(100),
-    Email VARCHAR(100),
+    Email VARCHAR(100), 
     RoleID INT FOREIGN KEY REFERENCES Roles(RoleID),
     SCID INT NULL FOREIGN KEY REFERENCES ServiceCenters(SCID),
-    IsActive BIT DEFAULT 1
+    IsActive BIT DEFAULT 1,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+
+CREATE UNIQUE INDEX UIX_Users_Email_NonNull ON Users(Email) WHERE Email IS NOT NULL;
+
+-- Lưu trữ mã OTP cho chức năng quên mật khẩu
+CREATE TABLE OtpTokens (
+    OtpID INT PRIMARY KEY IDENTITY(1,1),
+    UserID INT FOREIGN KEY REFERENCES Users(UserID),
+    OtpCode VARCHAR(10) NOT NULL,
+    ExpiryTime DATETIME NOT NULL,
+    IsUsed BIT DEFAULT 0,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+
+-- Lưu trữ thông tin liên kết OAuth (Google, Facebook...)
+CREATE TABLE UserOAuth (
+    OAuthID INT PRIMARY KEY IDENTITY(1,1),
+    UserID INT FOREIGN KEY REFERENCES Users(UserID),
+    Provider VARCHAR(50) NOT NULL, -- 'Google', 'Facebook'
+    ProviderUserId VARCHAR(255) NOT NULL, -- ID từ Provider
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UNIQUE(Provider, ProviderUserId)
 );
 
 -- Nhóm 2: Sản phẩm & Kho
@@ -175,17 +200,17 @@ CREATE TABLE CampaignVehicles (
 GO
 
 -- 4. Chèn dữ liệu mẫu (Seed Data)
-INSERT INTO Roles (RoleName) VALUES (N'Admin'), (N'EVM Staff'), (N'SC Staff'), (N'SC Technician');
+INSERT INTO Roles (RoleName) VALUES (N'Admin'), (N'EVM Staff'), (N'SC Staff'), (N'SC Technician'), (N'Customer');
 
 INSERT INTO ServiceCenters (SCName, Address, Phone, Email) VALUES 
 (N'VinFast Hà Nội - Long Biên', N'Số 1 Nguyễn Văn Linh, Hà Nội', '0243123456', 'sc.longbien@ev.com'),
 (N'VinFast TP.HCM - Landmark 81', N'208 Nguyễn Hữu Cảnh, TP.HCM', '0283999888', 'sc.landmark@ev.com');
 
-INSERT INTO Users (Username, PasswordHash, FullName, RoleID, SCID) VALUES 
-('admin', '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my', N'Quản trị viên', 1, NULL),
-('evm_staff', '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my', N'Nhân viên EVM', 2, NULL),
-('sc_staff', '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my', N'Nhân viên SC', 3, 1),
-('sc_tech', '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my', N'Kỹ thuật viên SC', 4, 1);
+INSERT INTO Users (Username, PasswordHash, FullName, Email, RoleID, SCID) VALUES 
+('admin', '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my', N'Quản trị viên', 'admin@ev.com', 1, NULL),
+('evm_staff', '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my', N'Nhân viên EVM', 'evm@ev.com', 2, NULL),
+('sc_staff', '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my', N'Nhân viên SC', 'sc.staff@ev.com', 3, 1),
+('sc_tech', '$2a$11$XWr3ekIg5a9ZBRxz7WY3/uv1qDdEumWrVU20HLhsTDbqpB/XrY2my', N'Kỹ thuật viên SC', 'sc.tech@ev.com', 4, 1);
 
 INSERT INTO Parts (PartCode, PartName, Category, Unit) VALUES 
 ('BAT-72V-LFP', N'Pin LFP 72V 100Ah', 'Battery', N'Cái'),
