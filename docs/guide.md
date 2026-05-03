@@ -228,52 +228,150 @@ Hệ thống sử dụng `IExceptionHandler` (.NET 8) để bắt mọi lỗi Ru
 Dưới đây là kế hoạch chi tiết để bạn hoàn thiện dự án, tập trung vào cả E-commerce và Nghiệp vụ Bảo hành.
 
 ### 🏁 Tuần 1: Cấu trúc E-commerce & Auth mở rộng
-*   **Ngày 1:** Cập nhật Database với các bảng mới (`Carts`, `Orders`, `Invoices`, `Favorites`, `Payments`, `Reviews`, `OTP_Tokens`, `User_OAuth`). Chạy lại Scaffold.
-*   **Ngày 2:** Mở rộng `AuthService`: OTP quên mật khẩu, OAuth (Google), xử lý đăng ký tài khoản Customer.
-*   **Ngày 3:** Triển khai API Sản phẩm cho Landing Page, tích hợp Recommendation System cơ bản.
-*   **Ngày 4:** Xây dựng API Sản phẩm yêu thích (Favorite) và Đánh giá (Rating & Review).
-*   **Ngày 5:** Tối ưu hóa hiệu năng truy vấn cho danh mục sản phẩm (Sử dụng Eager Loading và DTOs).
+
+- **Ngày 1:** Cập nhật Database với các bảng mới (`Carts`, `Orders`, `Invoices`, `Favorites`, `Payments`, `Reviews`, `OTP_Tokens`, `User_OAuth`). Chạy lại Scaffold.
+- **Ngày 2:** Mở rộng `AuthService`: OTP quên mật khẩu, OAuth (Google), xử lý đăng ký tài khoản Customer.
+- **Ngày 3:** Triển khai API Sản phẩm cho Landing Page, tích hợp Recommendation System cơ bản.
+- **Ngày 4:** Xây dựng API Sản phẩm yêu thích (Favorite) và Đánh giá (Rating & Review).
+- **Ngày 5:** Tối ưu hóa hiệu năng truy vấn cho danh mục sản phẩm (Sử dụng Eager Loading và DTOs).
 
 ### 🛒 Tuần 2: Giỏ hàng & Quy trình Đặt hàng
-*   **Ngày 6:** Triển khai API Giỏ hàng (Cart): Lưu trữ các sản phẩm khách muốn mua.
-*   **Ngày 7:** Xử lý logic tính toán tổng tiền, thuế và phí vận chuyển trong Giỏ hàng.
-*   **Ngày 8:** Triển khai API Đặt hàng (Order): Chuyển đổi từ Cart sang Order, trừ tồn kho (Inventory).
-*   **Ngày 9:** Xây dựng hệ thống Trạng thái đơn hàng: Chờ xác nhận, Đã thanh toán, Đang giao...
-*   **Ngày 10:** API Lịch sử đơn hàng dành cho khách hàng.
-*   **Ngày 11-12:** Viết Unit Test cho logic Đặt hàng và trừ kho.
+
+- **Ngày 6:** Triển khai API Giỏ hàng (Cart): Lưu trữ các sản phẩm khách muốn mua.
+- **Ngày 7:** Xử lý logic tính toán tổng tiền, thuế và phí vận chuyển trong Giỏ hàng.
+- **Ngày 8:** Triển khai API Đặt hàng (Order): Chuyển đổi từ Cart sang Order, trừ tồn kho (Inventory).
+- **Ngày 9:** Xây dựng hệ thống Trạng thái đơn hàng: Chờ xác nhận, Đã thanh toán, Đang giao...
+- **Ngày 10:** API Lịch sử đơn hàng dành cho khách hàng.
+- **Ngày 11-12:** Viết Unit Test cho logic Đặt hàng và trừ kho.
 
 ### 💳 Tuần 3: Thanh toán, Hoá đơn & Landing Page
-*   **Ngày 13:** Tích hợp Sandbox cho cổng thanh toán (VietQR hoặc VNPAY).
-*   **Ngày 14:** Triển khai API xử lý kết quả thanh toán (IPN - Instant Payment Notification).
-*   **Ngày 15:** Xây dựng Service xuất hoá đơn (Invoice): Sử dụng thư viện `QuestPDF` để tạo file PDF.
-*   **Ngày 16:** API tải hoá đơn và gửi mail xác nhận đơn hàng kèm hoá đơn đính kèm.
-*   **Ngày 17:** Phát triển Landing Page (Frontend cơ bản): Hiển thị xe, tra cứu bảo hành qua VIN.
-*   **Ngày 18:** Hoàn thiện giao diện Giỏ hàng và Thanh toán trên Frontend.
+
+- **Ngày 13:** Tích hợp Sandbox cho cổng thanh toán (VietQR hoặc VNPAY).
+- **Ngày 14:** Triển khai API xử lý kết quả thanh toán (IPN - Instant Payment Notification).
+- **Ngày 15:** Xây dựng Service xuất hoá đơn (Invoice): Sử dụng thư viện `QuestPDF` để tạo file PDF.
+- **Ngày 16:** API tải hoá đơn và gửi mail xác nhận đơn hàng kèm hoá đơn đính kèm.
+- **Ngày 17:** Phát triển Landing Page (Frontend cơ bản): Hiển thị xe, tra cứu bảo hành qua VIN.
+- **Ngày 18:** Hoàn thiện giao diện Giỏ hàng và Thanh toán trên Frontend.
 
 ### 🛠️ Tuần 4: Nghiệp vụ Bảo hành & Tích hợp AI
-*   **Ngày 19:** Triển khai API Tạo yêu cầu bảo hành (Warranty Claim) từ Trung tâm dịch vụ.
-*   **Ngày 20:** Module quản lý tệp đính kèm (Hình ảnh, Log xe) cho mỗi Claim.
-*   **Ngày 21:** Xây dựng luồng Phê duyệt bảo hành dành cho nhân viên hãng (EVM Staff).
-*   **Ngày 22:** Tích hợp AI (Semantic Kernel): Phân tích nội dung lỗi và phát hiện gian lận.
-*   **Ngày 23:** Module quản lý tồn kho phụ tùng tại Service Center.
-*   **Ngày 24:** Dashboard thống kê doanh thu và tỷ lệ bảo hành (Admin).
-*   **Ngày 25:** Tối ưu hóa Database (Indexing) và Caching (Redis).
+
+- **Ngày 19:** Triển khai API Tạo yêu cầu bảo hành (Warranty Claim) từ Trung tâm dịch vụ.
+- **Ngày 20:** Module quản lý tệp đính kèm (Hình ảnh, Log xe) cho mỗi Claim.
+- **Ngày 21:** Xây dựng luồng Phê duyệt bảo hành dành cho nhân viên hãng (EVM Staff).
+- **Ngày 22:** Tích hợp AI (Semantic Kernel): Phân tích nội dung lỗi và phát hiện gian lận.
+- **Ngày 23:** Module quản lý tồn kho phụ tùng tại Service Center.
+- **Ngày 24:** Dashboard thống kê doanh thu và tỷ lệ bảo hành (Admin).
+- **Ngày 25:** Tối ưu hóa Database (Indexing) và Caching (Redis).
 
 ### 🚀 Tuần cuối: Kiểm thử & Triển khai
-*   **Ngày 26:** Kiểm thử bảo mật: Check phân quyền Roles trên từng Endpoint.
-*   **Ngày 27:** Kiểm thử tích hợp: Mua xe -> Thanh toán -> Bảo hành.
-*   **Ngày 28:** Viết tài liệu hướng dẫn sử dụng cho các bộ phận.
-*   **Ngày 29:** Cấu hình Docker Compose hoàn chỉnh cho toàn bộ hệ thống.
-*   **Ngày 30:** Triển khai Staging và đóng gói dự án.
+
+- **Ngày 26:** Kiểm thử bảo mật: Check phân quyền Roles trên từng Endpoint.
+- **Ngày 27:** Kiểm thử tích hợp: Mua xe -> Thanh toán -> Bảo hành.
+- **Ngày 28:** Viết tài liệu hướng dẫn sử dụng cho các bộ phận.
+- **Ngày 29:** Cấu hình Docker Compose hoàn chỉnh cho toàn bộ hệ thống.
+- **Ngày 30:** Triển khai Staging và đóng gói dự án.
 
 ---
 
 ### 💡 Lời khuyên từ Mentor
+
 - **Luôn Git Commit:** Commit mỗi ngày với message rõ ràng.
 - **Kiểm tra Log:** Theo dõi `Serilog` để phát hiện lỗi sớm.
 - **Bảo mật:** Sử dụng `.env` để quản lý các Key bí mật.
 
 ---
 
-_Cập nhật lần cuối: 30/04/2026 bởi Mentor AI_
+## 🔐 12. Mở rộng Hệ thống Auth (OTP & Google OAuth)
 
+Chào mừng bạn đến với bước nâng cấp quan trọng cho hệ thống bảo mật. Đây là lúc chúng ta đưa ứng dụng lên chuẩn "Production" với các tính năng hiện đại.
+
+### A. Chức năng Quên mật khẩu (OTP)
+
+Quy trình này yêu cầu sự phối hợp giữa Database, Email Service và Logic xử lý Token.
+
+**1. Chuẩn bị Database:**
+Bạn cần bảng `OtpTokens` để lưu trữ mã OTP tạm thời:
+
+- `UserId`: Liên kết với người dùng.
+- `OtpCode`: Mã số (thường 6 số).
+- `ExpiryTime`: Thời điểm hết hạn (nên để 5-10 phút).
+- `IsUsed`: Đánh dấu mã đã sử dụng.
+
+**2. Triển khai Email Service (Infrastructure):**
+
+- Sử dụng thư viện `MailKit` hoặc `SendGrid`.
+- Cấu hình SMTP (Gmail App Password hoặc dịch vụ bên thứ 3) trong `appsettings.json`.
+- Interface `IEmailService` nên có hàm `SendEmailAsync(to, subject, body)`.
+
+**3. Logic nghiệp vụ (Application):**
+
+- **Bước 1 (Request OTP):** Kiểm tra Email tồn tại -> Tạo mã ngẫu nhiên -> Lưu vào `OtpTokens` -> Gửi Email.
+- **Bước 2 (Verify & Reset):** Người dùng nhập mã OTP và Mật khẩu mới -> Kiểm tra mã (đúng, chưa dùng, còn hạn) -> Cập nhật `PasswordHash` trong bảng `Users` -> Đánh dấu mã `IsUsed = true`.
+
+### B. Đăng nhập Google OAuth (Google Login)
+
+Chúng ta sử dụng luồng **Implicit Flow** hoặc **Authorization Code Flow** tùy thuộc vào Frontend, nhưng Backend sẽ đóng vai trò xác thực "ID Token".
+
+**1. Cấu hình Google Cloud Console:**
+
+- Tạo dự án mới -> APIs & Services -> Credentials.
+- Tạo **OAuth 2.0 Client ID** (Web application).
+- Lấy `ClientId` và `ClientSecret`.
+
+**2. Thư viện hỗ trợ:**
+Bạn cần gói NuGet `Google.Apis.Auth` trong project **Application** (Đã có sẵn trong cấu hình của bạn).
+
+**3. Quy trình xác thực:**
+
+1. **Frontend:** Gọi Google SDK, người dùng đăng nhập và nhận về một chuỗi `idToken`.
+2. **Backend (API):** Nhận `idToken` từ Frontend.
+3. **Verify:** Sử dụng `GoogleJsonWebSignature.ValidateAsync(idToken)` để kiểm tra tính hợp lệ của Token từ server Google.
+4. **Logic User:**
+   - Nếu Email trong Token đã có trong DB: Tiến hành tạo JWT và đăng nhập.
+   - Nếu chưa có: Tạo tài khoản mới cho người dùng này (với mật khẩu ngẫu nhiên hoặc bỏ trống) rồi trả về JWT.
+
+### 💡 Lời khuyên của Mentor:
+
+- **Bảo mật:** Không bao giờ trả về mã OTP trong phản hồi API.
+- **Giới hạn:** Nên có cơ chế "Rate Limit" để tránh người dùng yêu cầu gửi OTP liên tục (Spam).
+- **Trải nghiệm:** Khi đăng nhập Google thành công lần đầu, hãy đảm bảo bạn lưu lại `GoogleId` để liên kết tài khoản chính xác cho những lần sau.
+
+---
+
+## 🚀 13. Triển khai Refresh Token (Cơ chế duy trì đăng nhập)
+
+Đây là bước nâng cấp giúp người dùng không phải đăng nhập lại sau mỗi 30 phút.
+
+### 1. Cấu trúc bảng Database bổ sung
+
+Bạn cần thêm bảng `RefreshTokens` để lưu trữ các mã định danh dài hạn:
+
+```sql
+CREATE TABLE RefreshTokens (
+    TokenID INT IDENTITY(1,1) PRIMARY KEY,
+    UserID INT NOT NULL,
+    Token VARCHAR(255) NOT NULL,
+    ExpiryTime DATETIME NOT NULL,
+    IsRevoked BIT DEFAULT 0,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+```
+
+### 2. Luồng hoạt động (Workflow)
+
+1.  **Khi Login thành công:** Backend trả về đồng thời `AccessToken` (30 phút) và `RefreshToken` (7 ngày).
+2.  **Khi AccessToken hết hạn:** Frontend gửi `RefreshToken` lên một Endpoint mới (ví dụ: `/api/auth/refresh`).
+3.  **Backend kiểm tra:**
+    *   Nếu `RefreshToken` còn hạn và chưa bị thu hồi (`IsRevoked = 0`).
+    *   Thì cấp một cặp `AccessToken` và `RefreshToken` mới.
+4.  **Khi Logout:** Backend đánh dấu `IsRevoked = 1` cho Token đó.
+
+### 💡 Lời khuyên của Mentor:
+
+- **Bảo mật:** `RefreshToken` nên được lưu trong **HttpOnly Cookie** ở phía Frontend để chống lại tấn công XSS.
+- **Xoay vòng (Rotation):** Mỗi lần Refresh thành công, hãy vô hiệu hóa Token cũ và cấp Token mới hoàn toàn để tăng tính an toàn.
+
+---
+
+_Cập nhật lần cuối: 03/05/2026 bởi Mentor AI_

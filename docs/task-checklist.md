@@ -24,7 +24,8 @@ Dưới đây là lộ trình chi tiết của dự án, giúp theo dõi những
 - [x] Viết API quản lý Xe (Vehicle) - Cơ bản (Lấy danh sách).
 - [x] Viết API quản lý Khách hàng (Customer) - Đăng ký (GUID IDs).
 - [x] Triển khai **Global Exception Handling**.
-- [ ] Mở rộng Auth: Chức năng Quên mật khẩu (OTP) và Đăng nhập OAuth (Google).
+- [x] Mở rộng Auth: Chức năng Quên mật khẩu (OTP) và Đăng nhập OAuth (Google).
+- [ ] Triển khai Refresh Token (Cơ chế duy trì đăng nhập dài hạn).
 
 ## 🛒 Giai đoạn 3: E-commerce & Customer Portal (Mới)
 
