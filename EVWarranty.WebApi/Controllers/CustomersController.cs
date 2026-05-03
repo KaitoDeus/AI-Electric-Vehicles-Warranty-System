@@ -24,6 +24,7 @@ public class CustomersController : ControllerBase
         return Ok(result);
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<ActionResult<CustomerDto>> Register(CustomerCreateDto dto)
     {
