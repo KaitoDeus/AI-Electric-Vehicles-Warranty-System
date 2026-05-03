@@ -3,6 +3,7 @@ using EVWarranty.Application.Services;
 using EVWarranty.Domain.Entities.Interfaces;
 using EVWarranty.Infrastructure.Data;
 using EVWarranty.Infrastructure.Repositories;
+using EVWarranty.Infrastructure.Services;
 using EVWarranty.WebApi.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,7 @@ builder.Services.AddDbContext<EvWarrantyDbContext>(options =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // 3. Cấu hình Swagger hỗ trợ JWT
 builder.Services.AddSwaggerGen(options =>

@@ -9,7 +9,7 @@ public partial class User
 
     public string Username { get; set; } = null!;
 
-    public string PasswordHash { get; set; } = null!;
+    public string? PasswordHash { get; set; }
 
     public string? FullName { get; set; }
 
@@ -21,11 +21,17 @@ public partial class User
 
     public bool? IsActive { get; set; }
 
+    public DateTime? CreatedAt { get; set; }
+
     public virtual ICollection<ClaimStatusHistory> ClaimStatusHistories { get; set; } = new List<ClaimStatusHistory>();
+
+    public virtual ICollection<OtpToken> OtpTokens { get; set; } = new List<OtpToken>();
 
     public virtual Role? Role { get; set; }
 
     public virtual ServiceCenter? Sc { get; set; }
+
+    public virtual ICollection<UserOauth> UserOauths { get; set; } = new List<UserOauth>();
 
     public virtual ICollection<WarrantyClaim> WarrantyClaimApprovedByNavigations { get; set; } = new List<WarrantyClaim>();
 
